@@ -1,0 +1,40 @@
+{
+    "name": "technicpack/solder-framework",
+    "description": "The TechnicPack Solder Framework",
+    "keywords": ["TechnicPack", "solder"],
+    "homepage": "https://github.com/technicpack/solder-framework",
+    "license": "MIT",
+    "require": {
+        "php": "^7.1"
+    },
+    "require-dev": {
+        "larapack/dd": "^1.0",
+        "orchestra/testbench": "^3.7",
+        "phpunit/phpunit": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "TechnicPack\\SolderFramework\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TechnicPack\\SolderFramework\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "TechnicPack\\SolderFramework\\SolderFrameworkServiceProvider"
+            ]
+        }
+    }
+}
