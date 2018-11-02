@@ -49,8 +49,8 @@ class Modpack extends Model
      */
     protected static function boot()
     {
-        self::deleting(function ($modpack) {
-            Storage::delete($modpack->icon);
+        self::deleting(function (self $modpack) {
+            $modpack->unsetIcon();
         });
 
         parent::boot();
@@ -64,5 +64,16 @@ class Modpack extends Model
     public function getIconUrlAttribute()
     {
         return Storage::url($this->icon);
+    }
+
+    /**
+     * Remove icon from storage and database.
+     */
+    public function unsetIcon()
+    {
+        Storage::delete($this->icon);
+
+        $this->icon = null;
+        $this->save();
     }
 }

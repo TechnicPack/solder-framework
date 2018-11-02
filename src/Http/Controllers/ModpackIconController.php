@@ -47,10 +47,7 @@ class ModpackIconController extends BaseController
             ],
         ]);
 
-        if (null !== $modpack->icon) {
-            Storage::delete($modpack->icon);
-        }
-
+        $modpack->unsetIcon();
         $modpack->icon = $request->file('icon')->store('icons');
         $modpack->save();
 
@@ -68,10 +65,7 @@ class ModpackIconController extends BaseController
      */
     public function destroy(Modpack $modpack)
     {
-        Storage::delete($modpack->icon);
-
-        $modpack->icon = null;
-        $modpack->save();
+        $modpack->unsetIcon();
 
         return response()->json([], 204);
     }
