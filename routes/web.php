@@ -20,5 +20,7 @@ Route::prefix('api')->name('api.')->group(function () {
     });
 
     // Modpack Routes ...
+    Route::post('/modpacks/{modpack}/icon', 'TechnicPack\SolderFramework\Http\Controllers\ModpackIconController@store')->name('modpacks.icon.store');
+    Route::delete('/modpacks/{modpack}/icon', 'TechnicPack\SolderFramework\Http\Controllers\ModpackIconController@destroy')->name('modpacks.icon.destroy');
     Route::apiResource('modpacks', ModpackController::class);
 });

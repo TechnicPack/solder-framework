@@ -12,6 +12,7 @@
 namespace TechnicPack\SolderFramework\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Modpack extends Model
 {
@@ -24,4 +25,44 @@ class Modpack extends Model
         'name',
         'slug',
     ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'icon',
+    ];
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'icon_url',
+    ];
+
+    /**
+     * The "booting" method of the model.
+     */
+    protected static function boot()
+    {
+        self::deleting(function ($modpack) {
+            Storage::delete($modpack->icon);
+        });
+
+        parent::boot();
+    }
+
+    /**
+     * Get the full URL for the modpack icon.
+     *
+     * @return string
+     */
+    public function getIconUrlAttribute()
+    {
+        return Storage::url($this->icon);
+    }
 }

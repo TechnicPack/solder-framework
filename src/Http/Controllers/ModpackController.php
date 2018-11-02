@@ -13,6 +13,7 @@ namespace TechnicPack\SolderFramework\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 use TechnicPack\SolderFramework\Models\Modpack;
 use Illuminate\Routing\Controller as BaseController;
 
