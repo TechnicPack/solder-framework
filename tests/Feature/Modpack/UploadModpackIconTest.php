@@ -30,7 +30,7 @@ class UploadModpackIconTest extends TestCase
         $file = UploadedFile::fake()->image('modpack-icon.jpg', 500, 500);
         $modpack = factory(Modpack::class)->create();
 
-        $response = $this->postJson("/api/modpacks/{$modpack->id}/icon", [
+        $response = $this->putJson("/api/modpacks/{$modpack->id}/icon", [
             'icon' => $file,
         ]);
 
