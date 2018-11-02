@@ -13,7 +13,6 @@ namespace TechnicPack\SolderFramework\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Storage;
 use TechnicPack\SolderFramework\Models\Modpack;
 use Illuminate\Routing\Controller as BaseController;
 
@@ -48,10 +47,10 @@ class ModpackIconController extends BaseController
         ]);
 
         $modpack->unsetIcon();
-        $modpack->icon = $request->file('icon')->store('icons');
+        $modpack->icon = $request->file('icon')->store('icons', config('solder.disk.icons'));
         $modpack->save();
 
-        return response()->json();
+        return response()->json($modpack);
     }
 
     /**

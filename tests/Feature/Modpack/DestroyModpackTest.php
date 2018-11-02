@@ -23,6 +23,7 @@ class DestroyModpackTest extends TestCase
     /** @test **/
     public function a_modpack_can_be_destroyed()
     {
+        $this->withoutExceptionHandling();
         $modpack = factory(Modpack::class)->create([
             'name' => 'Existing Modpack',
         ]);

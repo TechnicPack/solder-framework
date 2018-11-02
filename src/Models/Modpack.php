@@ -45,6 +45,25 @@ class Modpack extends Model
     ];
 
     /**
+     * The storage disk for icons.
+     *
+     * @var \Illuminate\Contracts\Filesystem\Filesystem
+     */
+    protected $iconStorage;
+
+    /**
+     * Create a new Eloquent model instance.
+     *
+     * @param array $attributes
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $this->iconStorage = Storage::disk(config('solder.disk.icons'));
+    }
+
+    /**
      * The "booting" method of the model.
      */
     protected static function boot()
@@ -63,7 +82,7 @@ class Modpack extends Model
      */
     public function getIconUrlAttribute()
     {
-        return Storage::url($this->icon);
+        return $this->iconStorage->url($this->icon);
     }
 
     /**
@@ -71,7 +90,7 @@ class Modpack extends Model
      */
     public function unsetIcon()
     {
-        Storage::delete($this->icon);
+        $this->iconStorage->delete($this->icon);
 
         $this->icon = null;
         $this->save();

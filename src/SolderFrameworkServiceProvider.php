@@ -20,8 +20,15 @@ class SolderFrameworkServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Define framework resources
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->mergeConfigFrom(__DIR__.'/../config/solder.php', 'solder');
+
+        // Publish framework assets
+        $this->publishes([
+            __DIR__.'/../config/solder.php' => config_path('solder.php'),
+        ]);
     }
 
     /**
