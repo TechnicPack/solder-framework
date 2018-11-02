@@ -10,6 +10,7 @@
  */
 
 use Illuminate\Support\Facades\Route;
+use TechnicPack\SolderFramework\Http\Controllers\ModpackController;
 
 Route::prefix('api')->group(function () {
     Route::get('/', function () {
@@ -17,4 +18,7 @@ Route::prefix('api')->group(function () {
             'status' => 'ok',
         ]);
     });
+
+    // Modpack Routes ...
+    Route::apiResource('modpacks', ModpackController::class);
 });

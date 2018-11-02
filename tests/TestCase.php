@@ -16,6 +16,16 @@ use TechnicPack\SolderFramework\SolderFrameworkServiceProvider;
 
 class TestCase extends BaseTestCase
 {
+    /**
+     * Setup the test environment.
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->withFactories(__DIR__.'/../database/factories');
+    }
+
     protected function getPackageProviders($app)
     {
         return [
