@@ -12,7 +12,7 @@
 use Illuminate\Support\Facades\Route;
 use TechnicPack\SolderFramework\Http\Controllers\ModpackController;
 
-Route::prefix('api')->group(function () {
+Route::prefix('api')->name('api.')->group(function () {
     Route::get('/', function () {
         return response()->json([
             'status' => 'ok',

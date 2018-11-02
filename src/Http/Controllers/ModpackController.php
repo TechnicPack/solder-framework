@@ -12,11 +12,21 @@
 namespace TechnicPack\SolderFramework\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use TechnicPack\SolderFramework\Models\Modpack;
 use Illuminate\Routing\Controller as BaseController;
 
 class ModpackController extends BaseController
 {
+    /**
+     * ModpackController constructor.
+     */
+    public function __construct()
+    {
+        $this->middleware('api');
+        $this->middleware('auth:api');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -36,7 +46,12 @@ class ModpackController extends BaseController
      */
     public function store(Request $request)
     {
-        $modpack = Modpack::create($request->all());
+        $attributes = $request->validate([
+            'name' => ['required'],
+            'slug' => ['required', Rule::unique('modpacks')],
+        ]);
+
+        $modpack = Modpack::create($attributes);
 
         return response()->json($modpack, 201);
     }
@@ -44,14 +59,12 @@ class ModpackController extends BaseController
     /**
      * Display the specified resource.
      *
-     * @param $id
+     * @param Modpack $modpack
      *
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Modpack $modpack)
     {
-        $modpack = Modpack::where('id', $id)->first();
-
         return response()->json($modpack);
     }
 
@@ -59,14 +72,18 @@ class ModpackController extends BaseController
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param $id
+     * @param Modpack                  $modpack
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Modpack $modpack)
     {
-        $modpack = Modpack::where('id', $id)->first();
-        $modpack->update($request->all());
+        $attributes = $request->validate([
+            'name' => ['required'],
+            'slug' => ['required', Rule::unique('modpacks')->ignore($modpack->id)],
+        ]);
+
+        $modpack->update($attributes);
 
         return response()->json($modpack);
     }
@@ -74,13 +91,14 @@ class ModpackController extends BaseController
     /**
      * Remove the specified resource from storage.
      *
-     * @param $id
+     * @param Modpack $modpack
+     *
+     * @throws \Exception
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Modpack $modpack)
     {
-        $modpack = Modpack::where('id', $id)->first();
         $modpack->delete();
 
         return response()->json([], 204);

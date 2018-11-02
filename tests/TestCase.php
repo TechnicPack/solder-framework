@@ -11,7 +11,9 @@
 
 namespace TechnicPack\SolderFramework\Tests;
 
+use Illuminate\Support\Facades\Route;
 use Orchestra\Testbench\TestCase as BaseTestCase;
+use Orchestra\Testbench\Http\Middleware\Authenticate;
 use TechnicPack\SolderFramework\SolderFrameworkServiceProvider;
 
 class TestCase extends BaseTestCase
@@ -24,6 +26,13 @@ class TestCase extends BaseTestCase
         parent::setUp();
 
         $this->withFactories(__DIR__.'/../database/factories');
+
+        // TODO: need testbench 3.7.5 to remove this hack
+        Route::get('/login', function () { })->name('login');
+
+        $this->withoutMiddleware([
+            Authenticate::class,
+        ]);
     }
 
     protected function getPackageProviders($app)

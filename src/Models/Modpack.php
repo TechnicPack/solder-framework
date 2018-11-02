@@ -22,5 +22,6 @@ class Modpack extends Model
      */
     protected $fillable = [
         'name',
+        'slug',
     ];
 }
