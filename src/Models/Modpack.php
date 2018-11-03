@@ -14,6 +14,12 @@ namespace TechnicPack\SolderFramework\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * @property string name
+ * @property string slug
+ * @property string icon_path
+ * @property string icon
+ */
 class Modpack extends Model
 {
     /**
@@ -32,7 +38,7 @@ class Modpack extends Model
      * @var array
      */
     protected $hidden = [
-        'icon',
+        'icon_path',
     ];
 
     /**
@@ -41,7 +47,7 @@ class Modpack extends Model
      * @var array
      */
     protected $appends = [
-        'icon_url',
+        'icon',
     ];
 
     /**
@@ -80,9 +86,15 @@ class Modpack extends Model
      *
      * @return string
      */
-    public function getIconUrlAttribute()
+    public function getIconAttribute()
     {
-        return $this->iconStorage->url($this->icon);
+        if (! $this->icon_path) {
+            $hash = md5($this->name);
+
+            return "https://www.gravatar.com/avatar/{$hash}?s=50&d=identicon";
+        }
+
+        return $this->iconStorage->url($this->icon_path);
     }
 
     /**
@@ -90,9 +102,8 @@ class Modpack extends Model
      */
     public function unsetIcon()
     {
-        $this->iconStorage->delete($this->icon);
-
-        $this->icon = null;
+        $this->iconStorage->delete($this->icon_path);
+        $this->icon_path = null;
         $this->save();
     }
 }

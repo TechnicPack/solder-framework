@@ -47,10 +47,10 @@ class ModpackIconController extends BaseController
         ]);
 
         $modpack->unsetIcon();
-        $modpack->icon = $request->file('icon')->store('icons', config('solder.disk.icons'));
+        $modpack->icon_path = $request->file('icon')->store('icons', config('solder.disk.icons'));
         $modpack->save();
 
-        return response()->json($modpack);
+        return response([], 204);
     }
 
     /**
@@ -66,6 +66,6 @@ class ModpackIconController extends BaseController
     {
         $modpack->unsetIcon();
 
-        return response()->json([], 204);
+        return response([], 204);
     }
 }

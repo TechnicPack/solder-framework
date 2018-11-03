@@ -23,6 +23,7 @@ class UploadModpackIconTest extends TestCase
     use RefreshDatabase;
 
     private $storage;
+    private $icon;
 
     protected function setUp()
     {
@@ -30,21 +31,21 @@ class UploadModpackIconTest extends TestCase
 
         Storage::fake(config('solder.disk.icons'));
         $this->storage = Storage::disk(config('solder.disk.icons'));
+        $this->icon = UploadedFile::fake()->image('icon.png', 50, 50);
     }
 
     /** @test **/
     public function an_icon_can_be_uploaded()
     {
-        $file = UploadedFile::fake()->image('modpack-icon.jpg', 500, 500);
         $modpack = factory(Modpack::class)->create();
 
         $response = $this->putJson("/api/modpacks/{$modpack->id}/icon", [
-            'icon' => $file,
+            'icon' => $this->icon,
         ]);
 
-        $response->assertStatus(200);
-        $this->assertSame("icons/{$file->hashName()}", $modpack->fresh()->icon);
-        $this->storage->assertExists("icons/{$file->hashName()}");
+        $response->assertStatus(204);
+        $this->assertSame("icons/{$this->icon->hashName()}", $modpack->fresh()->icon_path);
+        $this->storage->assertExists("icons/{$this->icon->hashName()}");
     }
 
     /** @test **/
@@ -57,7 +58,7 @@ class UploadModpackIconTest extends TestCase
         ]);
 
         $response->assertStatus(422);
-        $this->assertNull($modpack->fresh()->icon);
+        $this->assertNull($modpack->fresh()->icon_path);
     }
 
     /** @test **/
@@ -71,27 +72,26 @@ class UploadModpackIconTest extends TestCase
         ]);
 
         $response->assertStatus(422);
-        $this->assertNull($modpack->fresh()->icon);
+        $this->assertNull($modpack->fresh()->icon_path);
     }
 
     /** @test **/
     public function the_icon_must_be_under_5000_kilobytes()
     {
-        $file = UploadedFile::fake()->image('modpack-icon.jpg')->size(5001);
         $modpack = factory(Modpack::class)->create();
 
         $response = $this->postJson("/api/modpacks/{$modpack->id}/icon", [
-            'icon' => $file,
+            'icon' => $this->icon->size(5001),
         ]);
 
         $response->assertStatus(422);
-        $this->assertNull($modpack->fresh()->icon);
+        $this->assertNull($modpack->fresh()->icon_path);
     }
 
     /** @test **/
     public function the_icon_width_must_be_less_than_500_px()
     {
-        $file = UploadedFile::fake()->image('modpack-icon.jpg', 501, 500);
+        $file = UploadedFile::fake()->image('icon.png', 501, 50);
         $modpack = factory(Modpack::class)->create();
 
         $response = $this->postJson("/api/modpacks/{$modpack->id}/icon", [
@@ -99,13 +99,13 @@ class UploadModpackIconTest extends TestCase
         ]);
 
         $response->assertStatus(422);
-        $this->assertNull($modpack->fresh()->icon);
+        $this->assertNull($modpack->fresh()->icon_path);
     }
 
     /** @test **/
     public function the_icon_height_must_be_less_than_500_px()
     {
-        $file = UploadedFile::fake()->image('modpack-icon.jpg', 500, 501);
+        $file = UploadedFile::fake()->image('icon.png', 50, 501);
         $modpack = factory(Modpack::class)->create();
 
         $response = $this->postJson("/api/modpacks/{$modpack->id}/icon", [
@@ -113,41 +113,43 @@ class UploadModpackIconTest extends TestCase
         ]);
 
         $response->assertStatus(422);
-        $this->assertNull($modpack->fresh()->icon);
+        $this->assertNull($modpack->fresh()->icon_path);
     }
 
     /** @test **/
     public function an_icon_can_be_destroyed()
     {
-        $file = UploadedFile::fake()->image('modpack-icon.jpg');
-        $modpack = factory(Modpack::class)->create(['icon' => $this->storage->putFile('icons', $file)]);
+        $modpack = factory(Modpack::class)->create([
+            'icon_path' => $this->storage->putFile('icons', $this->icon),
+        ]);
 
-        $this->storage->assertExists("icons/{$file->hashName()}");
+        $this->storage->assertExists("icons/{$this->icon->hashName()}");
 
         $response = $this->deleteJson("/api/modpacks/{$modpack->id}/icon");
 
         $response->assertStatus(204);
-        $this->assertNull($modpack->fresh()->icon);
-        $this->storage->assertMissing("icons/{$file->hashName()}");
+        $this->assertNull($modpack->fresh()->icon_path);
+        $this->storage->assertMissing("icons/{$this->icon->hashName()}");
     }
 
     /** @test **/
     public function old_icons_are_removed_from_storage_when_replaced()
     {
-        $originalFile = UploadedFile::fake()->image('original-icon.jpg');
-        $newFile = UploadedFile::fake()->image('new-icon.jpg');
-        $modpack = factory(Modpack::class)->create(['icon' => $this->storage->putFile('icons', $originalFile)]);
+        $originalFile = UploadedFile::fake()->image('original.png');
+        $modpack = factory(Modpack::class)->create([
+            'icon_path' => $this->storage->putFile('icons', $originalFile),
+        ]);
 
         $this->storage->assertExists("icons/{$originalFile->hashName()}");
 
         $response = $this->postJson("/api/modpacks/{$modpack->id}/icon", [
-            'icon' => $newFile,
+            'icon' => $this->icon,
         ]);
 
-        $response->assertStatus(200);
-        $this->assertSame("icons/{$newFile->hashName()}", $modpack->fresh()->icon);
+        $response->assertStatus(204);
+        $this->assertSame("icons/{$this->icon->hashName()}", $modpack->fresh()->icon_path);
         $this->storage->assertMissing("icons/{$originalFile->hashName()}");
-        $this->storage->assertExists("icons/{$newFile->hashName()}");
+        $this->storage->assertExists("icons/{$this->icon->hashName()}");
     }
 
     /** @test **/
@@ -157,16 +159,17 @@ class UploadModpackIconTest extends TestCase
             Authenticate::class,
         ]);
 
-        $file = UploadedFile::fake()->image('modpack-icon.jpg');
-        $modpack = factory(Modpack::class)->create(['icon' => null]);
+        $modpack = factory(Modpack::class)->create([
+            'icon_path' => null,
+        ]);
 
         $response = $this->postJson("/api/modpacks/{$modpack->id}/icon", [
-            'icon' => $file,
+            'icon' => $this->icon,
         ]);
 
         $response->assertStatus(401);
-        $this->assertNull($modpack->fresh()->icon);
-        $this->storage->assertMissing("icons/{$file->hashName()}");
+        $this->assertNull($modpack->fresh()->icon_path);
+        $this->storage->assertMissing("icons/{$this->icon->hashName()}");
     }
 
     /** @test **/
@@ -176,27 +179,28 @@ class UploadModpackIconTest extends TestCase
             Authenticate::class,
         ]);
 
-        $file = UploadedFile::fake()->image('modpack-icon.jpg');
-
-        $modpack = factory(Modpack::class)->create(['icon' => $this->storage->putFile('icons', $file)]);
+        $modpack = factory(Modpack::class)->create([
+            'icon_path' => $this->storage->putFile('icons', $this->icon),
+        ]);
 
         $response = $this->deleteJson("/api/modpacks/{$modpack->id}/icon");
 
         $response->assertStatus(401);
-        $this->assertSame("icons/{$file->hashName()}", $modpack->fresh()->icon);
-        $this->storage->assertExists("icons/{$file->hashName()}");
+        $this->assertSame("icons/{$this->icon->hashName()}", $modpack->fresh()->icon_path);
+        $this->storage->assertExists("icons/{$this->icon->hashName()}");
     }
 
     /** @test **/
     public function destroying_a_modpack_removes_its_icon_from_storage()
     {
-        $file = UploadedFile::fake()->image('modpack-icon.jpg');
-        $modpack = factory(Modpack::class)->create(['icon' => $this->storage->putFile('icons', $file)]);
+        $modpack = factory(Modpack::class)->create([
+            'icon_path' => $this->storage->putFile('icons', $this->icon),
+        ]);
 
-        $this->storage->assertExists("icons/{$file->hashName()}");
+        $this->storage->assertExists("icons/{$this->icon->hashName()}");
 
         $this->deleteJson("/api/modpacks/{$modpack->id}");
 
-        $this->storage->assertMissing("icons/{$file->hashName()}");
+        $this->storage->assertMissing("icons/{$this->icon->hashName()}");
     }
 }
