@@ -22,4 +22,17 @@ return [
     'disk' => [
         'icons' => env('FILESYSTEM_ICONS', 'public'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Runtime Models
+    |--------------------------------------------------------------------------
+    |
+    | Here you can override the class names of the jobs used by this package.
+    | Make sure your custom models extend the ones provided by the package.
+    */
+
+    'model' => [
+        'modpack' => \TechnicPack\SolderFramework\Models\Modpack::class,
+    ],
 ];

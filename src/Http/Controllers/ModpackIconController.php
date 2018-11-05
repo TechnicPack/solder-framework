@@ -19,24 +19,34 @@ use Illuminate\Routing\Controller as BaseController;
 class ModpackIconController extends BaseController
 {
     /**
+     * The modpack model.
+     *
+     * @var Modpack
+     */
+    protected $modpack;
+
+    /**
      * ModpackController constructor.
      */
     public function __construct()
     {
         $this->middleware('api');
         $this->middleware('auth:api');
+        $this->modpack = config('solder.model.modpack');
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param Modpack                  $modpack
+     * @param $modpackId
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request, Modpack $modpack)
+    public function store(Request $request, $modpackId)
     {
+        $modpack = $this->modpack::findOrFail($modpackId);
+
         $request->validate([
             'icon' => [
                 'required',
@@ -56,14 +66,13 @@ class ModpackIconController extends BaseController
     /**
      * Remove the specified resource from storage.
      *
-     * @param Modpack $modpack
-     *
-     * @throws \Exception
+     * @param $modpackId
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Modpack $modpack)
+    public function destroy($modpackId)
     {
+        $modpack = $this->modpack::findOrFail($modpackId);
         $modpack->unsetIcon();
 
         return response([], 204);
