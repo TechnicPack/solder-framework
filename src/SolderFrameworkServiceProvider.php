@@ -11,6 +11,7 @@
 
 namespace TechnicPack\SolderFramework;
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class SolderFrameworkServiceProvider extends ServiceProvider
@@ -20,21 +21,32 @@ class SolderFrameworkServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Define framework resources
-        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        // Register framework resources
+        $this->registerRoutes();
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->mergeConfigFrom(__DIR__.'/../config/solder.php', 'solder');
 
         // Publish framework assets
         $this->publishes([
             __DIR__.'/../config/solder.php' => config_path('solder.php'),
-        ]);
+        ], 'solder-config');
     }
 
     /**
-     * Register the application services.
+     * Register Solder's routes.
      */
-    public function register()
+    private function registerRoutes()
     {
+        // If the routes have not been cached, we will include them in a route group
+        // so that all of the routes will be conveniently registered to the given
+        // controller namespace. After that we will load the Solder routes file.
+        if (! $this->app->routesAreCached()) {
+            Route::name('api.')
+                ->namespace('TechnicPack\SolderFramework\Http\Controllers')
+                ->prefix(Solder::$apiRoutePrefix)
+                ->group(function ($router) {
+                    require __DIR__.'/Http/routes.php';
+                });
+        }
     }
 }
