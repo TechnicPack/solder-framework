@@ -24,6 +24,7 @@ class SolderFrameworkServiceProvider extends ServiceProvider
         // Register framework resources
         $this->registerRoutes();
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'solder');
         $this->mergeConfigFrom(__DIR__.'/../config/solder.php', 'solder');
 
         // Publish framework assets
@@ -47,6 +48,13 @@ class SolderFrameworkServiceProvider extends ServiceProvider
                 ->group(function ($router) {
                     require __DIR__.'/Http/routes.php';
                 });
+
+            // Catch-all Route...
+            Route::view('/{any?}', Solder::$appBladeTemplate)
+                ->where('any', '(.*)')
+                ->middleware('web', 'auth')
+                ->prefix(Solder::$appRoutePrefix)
+                ->name('solder.index');
         }
     }
 }
