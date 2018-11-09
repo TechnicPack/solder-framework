@@ -31,6 +31,9 @@ class SolderFrameworkServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/solder.php' => config_path('solder.php'),
         ], 'solder-config');
+        $this->publishes([
+            __DIR__.'/../resources/views' => resource_path('views/vendor/solder'),
+        ], 'solder-views');
     }
 
     /**
