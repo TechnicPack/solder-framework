@@ -47,6 +47,8 @@
 </template>
 
 <script>
+    import Modpack from '../models/Modpack'
+
     export default {
         name: "solder-menu",
 
@@ -79,11 +81,8 @@
             /**
              * Get all of the OAuth clients for the user.
              */
-            getModpacks() {
-                axios.get(`${this.$hostname}/modpacks`)
-                    .then(response => {
-                        this.modpacks = response.data;
-                    });
+            async getModpacks() {
+                this.modpacks = await Modpack.get();
             },
         }
     }
