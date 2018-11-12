@@ -1,96 +1,110 @@
 <template>
-    <div class="mb-4">
-        <form v-if="editing" @submit.prevent="updateModpack" class="d-flex justify-content-between align-items-center mb-2" style="min-height: 50px;">
-            <div class="flex-1 mr-2">
-                <label class="sr-only" for="name">Name</label>
-                <input type="text" class="form-control mb-2 mr-sm-2" id="name" v-model="updateName">
+    <div class="container">
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <h4>Modpack Details</h4>
             </div>
-
-            <div>
-                <button type="submit" class="btn btn-primary mb-2">Save</button>
-                <button type="reset" @click="editing = false" class="btn btn-link mb-2">Cancel</button>
-            </div>
-        </form>
-
-        <div v-else class="d-flex justify-content-between align-items-center mb-2">
-            <div class="d-flex align-items-center">
-                <img :src="modpack.icon" class="mr-2" width="50px" height="50px"/>
-                <h2 class="mb-0">{{ modpack.name }}</h2>
-            </div>
-
-            <div>
-                <button class="btn btn-outline-secondary disabled">Upload Icon</button>
-                <button @click="editing = true" class="btn btn-outline-primary">Edit Modpack</button>
-            </div>
-
-        </div>
-
-        <div class="card mb-4">
-            <div class="card-body">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item d-flex">
-                        <div class="w-25">Slug</div>
-                        <div class="w-75">{{ modpack.slug }}</div>
-                    </li>
-
-                    <li class="list-group-item d-flex">
-                        <div class="w-25">Created</div>
-                        <div class="w-75">{{ modpack.created_at }}</div>
-                    </li>
-
-                    <li class="list-group-item d-flex">
-                        <div class="w-25">Updated</div>
-                        <div class="w-75">{{ modpack.updated_at }}</div>
-                    </li>
-                </ul>
+            <div class="col d-md-flex justify-content-md-end text-uppercase">
+                <div class="ml-md-4">{{ modpack.name }}</div>
             </div>
         </div>
 
-        <h3>Danger Zone</h3>
-        <div class="card border-danger mb-3">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item d-flex justify-content-between">
-                    <div>
-                        <h5 class="card-title mb-0">Delete this modpack</h5>
-                        <p class="card-text">Once you delete a modpack, there is no going back. Please be certain.</p>
+        <div class="row">
+            <div class="col-md-3 solder-tabs">
+                <aside>
+                    <ul class="nav flex-column mb-4 ">
+                        <li class="nav-item ">
+                            <a class="nav-link active" href="#builds" aria-controls="builds" role="tab" data-toggle="tab">
+                                <svg class="icon-20 " viewBox="0 0 20 16 " xmlns="http://www.w3.org/2000/svg ">
+                                    <path d="M16 14v2H4v-2H0V2h4V0h12v2h4v12h-4zM14 3.5V2H6v12h8V3.5zm2 .5v8h2V4h-2zM4 4H2v8h2V4z" />
+                                </svg>
+                                Builds
+                            </a>
+                        </li>
+
+                        <li class="nav-item ">
+                            <a class="nav-link" href="#meta" aria-controls="meta" role="tab" data-toggle="tab">
+                                <svg class="icon-20 " viewBox="0 0 20 20 " xmlns="http://www.w3.org/2000/svg ">
+                                    <path d="M0 10V2l2-2h8l10 10-10 10L0 10zm4.5-4a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+                                </svg>
+                                Meta
+                            </a>
+                        </li>
+                    </ul>
+                </aside>
+            </div>
+
+            <!-- Tab cards -->
+            <div class="col-md-9">
+                <div class="tab-content">
+                    <!-- Builds -->
+                    <div role="tabcard" class="tab-pane active" id="builds">
+                        <modpack-create-build :modpack="modpack"></modpack-create-build>
+                        <modpack-current-builds :modpack="modpack"></modpack-current-builds>
                     </div>
-                    <button class="btn btn-outline-danger" @click="deleteModpack()">Delete Modpack</button>
-                </li>
-            </ul>
+
+                    <!-- Meta -->
+                    <div role="tabcard" class="tab-pane" id="meta">
+                        <modpack-icon :modpack="modpack"></modpack-icon>
+                        <modpack-metadata :modpack="modpack"></modpack-metadata>
+                    </div>
+                </div>
+
+                <div class="d-md-flex align-items-center mt-4">
+                    <div class="mr-auto">
+                        <strong>ID:</strong> {{ modpack.id }}
+                        <span>,</span>
+                        <strong>Slug:</strong> {{ modpack.slug }}
+                    </div>
+                    <button title="Delete Server" class="btn btn-sm btn-secondary">
+                        Delete
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
 </template>
 
 <script>
     import Modpack from '../models/Modpack'
-    import FileSelect from '../components/FileSelect'
+    import ModpackCreateBuild from '../components/ModpackCreateBuild'
+    import ModpackCurrentBuilds from '../components/ModpackCurrentBuilds'
+    import ModpackIcon from '../components/ModpackIcon'
+    import ModpackMetadata from '../components/ModpackMetadata'
 
     export default {
         props: ['modpackId'],
 
         components: {
-            FileSelect
+            ModpackCreateBuild,
+            ModpackCurrentBuilds,
+            ModpackIcon,
+            ModpackMetadata,
         },
 
 
-       /*
+       /**
         * The component's data.
         */
         data() {
             return {
                 modpack: [],
-                updateName: '',
-                editing: false,
-                icon: null
             }
         },
 
 
         /**
-         * Prepare the component.
+         * The component has been created by Vue.
          */
-        mounted() {
+        created() {
+            var self = this;
+
             this.getModpack();
+
+            Bus.$on('updateModpack', function () {
+                self.getModpack();
+            });
         },
 
 
@@ -110,32 +124,55 @@
              */
             async getModpack() {
                 this.modpack = await Modpack.find(this.modpackId);
-                this.updateName = this.modpack.name;
-            },
-
-
-            /**
-             * Update the modpack.
-             */
-            async updateModpack() {
-                this.modpack.name = this.updateName;
-                this.modpack = await this.modpack.save();
-                this.editing = false;
-            },
-
-            /**
-             * Delete the modpack.
-             */
-            async deleteModpack() {
-                this.modpack.delete();
-                this.$router.push({name: 'home'})
             }
         }
     }
 </script>
 
-<style scoped>
-    .file-select > input[type="file"] {
-        display: none;
+<style>
+    .solder-tabs .nav-link {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        padding-top: 5px;
+        padding-right: 0;
+        padding-bottom: 5px;
+        padding-left: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #49545a;
+    }
+
+    .solder-tabs .nav-link svg {
+        fill: currentColor;
+        margin-right: 15px;
+        color: #9aa5ac;
+        -ms-flex-negative: 0;
+        flex-shrink: 0;
+    }
+
+    .solder-tabs .nav-link:hover {
+        font-weight: 600;
+        color: #42a2dc;
+    }
+
+    .solder-tabs .nav-link:hover svg {
+        fill: #42a2dc;
+    }
+
+    .solder-tabs .nav-link.active {
+        font-weight: 600;
+        color: #42a2dc;
+    }
+
+    .solder-tabs .nav-link.active svg {
+        fill: #42a2dc;
+    }
+
+    .solder-tabs .nav-link {
+        padding-bottom: 10px;
     }
 </style>
