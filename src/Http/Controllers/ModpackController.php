@@ -67,13 +67,13 @@ class ModpackController extends BaseController
     /**
      * Display the specified resource.
      *
-     * @param $modpackId
+     * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
      */
-    public function show($modpackId)
+    public function show(Request $request)
     {
-        $modpack = $this->modpack::findOrFail($modpackId);
+        $modpack = $this->modpack::findOrFail($request->modpack);
 
         return response()->json($modpack);
     }
@@ -82,13 +82,12 @@ class ModpackController extends BaseController
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param $modpackId
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $modpackId)
+    public function update(Request $request)
     {
-        $modpack = $this->modpack::findOrFail($modpackId);
+        $modpack = $this->modpack::findOrFail($request->modpack);
 
         $attributes = $request->validate([
             'name' => ['required'],
@@ -103,13 +102,13 @@ class ModpackController extends BaseController
     /**
      * Remove the specified resource from storage.
      *
-     * @param $modpackId
+     * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($modpackId)
+    public function destroy(Request $request)
     {
-        $modpack = $this->modpack::findOrFail($modpackId);
+        $modpack = $this->modpack::findOrFail($request->modpack);
         $modpack->delete();
 
         return response()->json([], 204);

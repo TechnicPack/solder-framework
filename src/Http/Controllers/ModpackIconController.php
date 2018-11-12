@@ -39,13 +39,12 @@ class ModpackIconController extends BaseController
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param $modpackId
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request, $modpackId)
+    public function store(Request $request)
     {
-        $modpack = $this->modpack::findOrFail($modpackId);
+        $modpack = $this->modpack::findOrFail($request->modpack);
 
         $request->validate([
             'icon' => [
@@ -66,13 +65,13 @@ class ModpackIconController extends BaseController
     /**
      * Remove the specified resource from storage.
      *
-     * @param $modpackId
+     * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($modpackId)
+    public function destroy(Request $request)
     {
-        $modpack = $this->modpack::findOrFail($modpackId);
+        $modpack = $this->modpack::findOrFail($request->modpack);
         $modpack->unsetIcon();
 
         return response([], 204);
