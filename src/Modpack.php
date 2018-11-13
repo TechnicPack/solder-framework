@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace TechnicPack\SolderFramework\Models;
+namespace TechnicPack\SolderFramework;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;

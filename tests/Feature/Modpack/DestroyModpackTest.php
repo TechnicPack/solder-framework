@@ -11,7 +11,7 @@
 
 namespace TechnicPack\SolderFramework\Tests\Feature\Modpack;
 
-use TechnicPack\SolderFramework\Models\Modpack;
+use TechnicPack\SolderFramework\Modpack;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Http\Middleware\Authenticate;

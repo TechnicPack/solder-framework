@@ -33,6 +33,6 @@ return [
     */
 
     'model' => [
-        'modpack' => \TechnicPack\SolderFramework\Models\Modpack::class,
+        'modpack' => \TechnicPack\SolderFramework\Modpack::class,
     ],
 ];
