@@ -1,5 +1,6 @@
 import { Model as BaseModel } from 'vue-api-query'
 import ErrorCollection from './ErrorCollection'
+import Solder from '../solder';
 
 export default class Model extends BaseModel {
     /**
@@ -14,7 +15,7 @@ export default class Model extends BaseModel {
 
     // define a base url for a REST API
     baseURL () {
-        return window.baseURL || '/api';
+        return Solder.apiBaseUrl;
     }
 
     // implement a default request method

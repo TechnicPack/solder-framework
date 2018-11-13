@@ -26,6 +26,7 @@
 
 <script>
     import ErrorCollection from '../models/ErrorCollection'
+    import Solder from '../solder'
 
     export default {
         props: ['modpack'],
@@ -57,7 +58,7 @@
                 // We need to gather a fresh FormData instance with the profile photo appended to
                 // the data so we can POST it up to the server. This will allow us to do async
                 // uploads of the profile photos. We will update the user after this action.
-                axios.post(`${window.baseURL}/modpacks/${this.modpack.id}/icon`, this.gatherFormData())
+                axios.post(`${Solder.apiBaseUrl}/modpacks/${this.modpack.id}/icon`, this.gatherFormData())
                     .then(() => {
                             Bus.$emit('updateModpack');
                             self.busy = false;
