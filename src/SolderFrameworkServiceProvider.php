@@ -48,16 +48,9 @@ class SolderFrameworkServiceProvider extends ServiceProvider
             Route::name('api.')
                 ->namespace('TechnicPack\SolderFramework\Http\Controllers')
                 ->prefix(Solder::$apiRoutePrefix)
-                ->group(function ($router) {
+                ->group(function () {
                     require __DIR__.'/Http/routes.php';
                 });
-
-            // Catch-all Route...
-            Route::view('/{any?}', Solder::$appBladeTemplate)
-                ->where('any', '(.*)')
-                ->middleware('web', 'auth')
-                ->prefix(Solder::$appRoutePrefix)
-                ->name('solder.index');
         }
     }
 }
