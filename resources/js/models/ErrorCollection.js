@@ -55,7 +55,7 @@ export default class ErrorCollection {
         if (typeof errors === 'object') {
             this.errors = errors;
         } else {
-            this.errors = {'form': [__('Something went wrong. Please try again or contact customer support.')]};
+            this.errors = {'form': ['Something went wrong. Please try again or contact customer support.']};
         }
     };
 
