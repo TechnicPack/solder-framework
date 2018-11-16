@@ -1,6 +1,16 @@
 <template>
     <div class="card card-default">
-        <div class="card-header">Current Builds</div>
+        <div class="card-header">
+            <div class="d-flex align-items-center justify-content-between">
+            <span>Current Builds</span>
+            <div class="input-group input-group-sm w-25">
+                <input class="form-control py-2 border-right-0 border" type="search" value="search" v-model="search">
+                <span class="input-group-append">
+                    <div class="input-group-text bg-white"><i class="fa fa-search"></i></div>
+                </span>
+            </div>
+            </div>
+        </div>
 
         <div class="table-responsive">
             <table class="table table-valign-middle mb-0">
@@ -11,7 +21,7 @@
                 </thead>
 
                 <tbody>
-                <tr  v-for="build in builds">
+                <tr  v-for="build in filteredBuilds">
                     <td>
                         <a :href="buildUrl(build)">{{ build.tag }}</a>
                     </td>
@@ -43,6 +53,21 @@
 <script>
     export default {
         props: ['modpack', 'builds'],
+
+        data() {
+            return {
+                search: '',
+            }
+        },
+
+        computed: {
+            filteredBuilds() {
+                var self=this;
+                return this.builds.filter(function(build) {
+                    return build.tag.toLowerCase().indexOf(self.search.toLowerCase())>=0;
+                });
+            }
+        },
 
         methods: {
             buildUrl(build) {
