@@ -4,9 +4,9 @@
             <div class="d-flex align-items-center justify-content-between">
             <span>Current Builds</span>
             <div class="input-group input-group-sm w-25">
-                <input class="form-control py-2 border-right-0 border" type="search" value="search" v-model="search">
+                <input class="form-control py-2 border-right-0 border shadow-none" type="search" value="search" v-model="search">
                 <span class="input-group-append">
-                    <div class="input-group-text bg-white"><i class="fa fa-search"></i></div>
+                    <div class="input-group-text bg-white border"><i class="fa fa-search"></i></div>
                 </span>
             </div>
             </div>
