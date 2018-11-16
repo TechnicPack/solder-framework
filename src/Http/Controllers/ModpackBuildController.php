@@ -14,41 +14,49 @@ namespace TechnicPack\SolderFramework\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Spatie\QueryBuilder\QueryBuilder;
-use TechnicPack\SolderFramework\Modpack;
 use TechnicPack\SolderFramework\Rules\UrlSafe;
 use Illuminate\Routing\Controller as BaseController;
 
-class ModpackController extends BaseController
+class ModpackBuildController extends BaseController
 {
+    /**
+     * The build model.
+     *
+     * @var \TechnicPack\SolderFramework\Build
+     */
+    protected $build;
     /**
      * The modpack model.
      *
-     * @var Modpack
+     * @var \TechnicPack\SolderFramework\Modpack
      */
     protected $modpack;
 
     /**
-     * ModpackController constructor.
+     * BuildController constructor.
      */
     public function __construct()
     {
         $this->middleware('api');
         $this->middleware('auth:api');
+        $this->build = config('solder.model.build');
         $this->modpack = config('solder.model.modpack');
     }
 
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
+     *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $modpacks = QueryBuilder::for(Modpack::class)
-            ->allowedIncludes('builds')
+        $builds = QueryBuilder::for($this->build)
+            ->whereModpack($request->modpack)
             ->get();
 
-        return response()->json($modpacks);
+        return response()->json($builds);
     }
 
     /**
@@ -60,14 +68,20 @@ class ModpackController extends BaseController
      */
     public function store(Request $request)
     {
+        $modpack = $this->modpack::findOrFail($request->modpack);
+        $unique = Rule::unique('builds')->where('modpack_id', $modpack->id);
+
         $attributes = $request->validate([
-            'name' => ['required'],
-            'slug' => ['required', new UrlSafe(), Rule::unique('modpacks')],
+            'tag'               => ['required', new UrlSafe(), $unique],
+            'minecraft_version' => ['required'],
+            'forge_version'     => ['nullable'],
+            'java_version'      => ['nullable'],
+            'java_memory'       => ['nullable', 'int'],
         ]);
 
-        $modpack = $this->modpack::create($attributes);
+        $build = $modpack->builds()->create($attributes);
 
-        return response()->json($modpack, 201);
+        return response()->json($build, 201);
     }
 
     /**
@@ -79,11 +93,10 @@ class ModpackController extends BaseController
      */
     public function show(Request $request)
     {
-        $modpack = QueryBuilder::for(Modpack::class)
-            ->allowedIncludes('builds')
-            ->findOrFail($request->modpack);
+        $build = QueryBuilder::for($this->build)
+            ->findOrFail($request->build);
 
-        return response()->json($modpack);
+        return response()->json($build);
     }
 
     /**
@@ -95,16 +108,23 @@ class ModpackController extends BaseController
      */
     public function update(Request $request)
     {
-        $modpack = $this->modpack::findOrFail($request->modpack);
+        $build = $this->build::whereModpack($request->modpack)
+            ->findOrFail($request->build);
+
+        $unique = Rule::unique('builds')
+            ->where('modpack_id', $request->modpack)
+            ->ignore($build->id);
 
         $attributes = $request->validate([
-            'name' => ['required'],
-            'slug' => ['required', Rule::unique('modpacks')->ignore($modpack->id)],
+            'tag'               => ['required', new UrlSafe(), $unique],
+            'minecraft_version' => ['required'],
+            'java_version'      => ['nullable'],
+            'java_memory'       => ['int', 'nullable'],
         ]);
 
-        $modpack->update($attributes);
+        $build->update($attributes);
 
-        return response()->json($modpack);
+        return response()->json($build);
     }
 
     /**
@@ -116,8 +136,8 @@ class ModpackController extends BaseController
      */
     public function destroy(Request $request)
     {
-        $modpack = $this->modpack::findOrFail($request->modpack);
-        $modpack->delete();
+        $build = $this->build::findOrFail($request->build);
+        $build->delete();
 
         return response()->json([], 204);
     }

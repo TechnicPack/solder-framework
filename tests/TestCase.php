@@ -13,6 +13,7 @@ namespace TechnicPack\SolderFramework\Tests;
 
 use Illuminate\Support\Facades\Route;
 use Orchestra\Testbench\TestCase as BaseTestCase;
+use Spatie\QueryBuilder\QueryBuilderServiceProvider;
 use Orchestra\Testbench\Http\Middleware\Authenticate;
 use TechnicPack\SolderFramework\SolderFrameworkServiceProvider;
 
@@ -35,10 +36,18 @@ class TestCase extends BaseTestCase
         ]);
     }
 
+    /**
+     * Define environment setup.
+     *
+     * @param \Illuminate\Foundation\Application $app
+     *
+     * @return array
+     */
     protected function getPackageProviders($app)
     {
         return [
             SolderFrameworkServiceProvider::class,
+            QueryBuilderServiceProvider::class,
         ];
     }
 }

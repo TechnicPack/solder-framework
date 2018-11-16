@@ -189,18 +189,4 @@ class UploadModpackIconTest extends TestCase
         $this->assertSame("icons/{$this->icon->hashName()}", $modpack->fresh()->icon_path);
         $this->storage->assertExists("icons/{$this->icon->hashName()}");
     }
-
-    /** @test **/
-    public function destroying_a_modpack_removes_its_icon_from_storage()
-    {
-        $modpack = factory(Modpack::class)->create([
-            'icon_path' => $this->storage->putFile('icons', $this->icon),
-        ]);
-
-        $this->storage->assertExists("icons/{$this->icon->hashName()}");
-
-        $this->deleteJson("/api/modpacks/{$modpack->id}");
-
-        $this->storage->assertMissing("icons/{$this->icon->hashName()}");
-    }
 }

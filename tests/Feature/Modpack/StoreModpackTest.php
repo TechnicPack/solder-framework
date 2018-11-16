@@ -86,4 +86,16 @@ class StoreModpackTest extends TestCase
         $response->assertStatus(422);
         $this->assertSame(1, Modpack::count());
     }
+
+    /** @test */
+    public function the_slug_field_must_not_contain_spaces_or_special_characters()
+    {
+        $response = $this->postJson('/api/modpacks', [
+            'name' => 'Original Modpack',
+            'slug' => 'spaces and symbols!',
+        ]);
+
+        $response->assertJsonValidationErrors('slug');
+        $this->assertSame(0, Modpack::count());
+    }
 }

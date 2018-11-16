@@ -13,3 +13,6 @@
 Route::match(['post', 'put', 'patch'], '/modpacks/{modpack}/icon', 'ModpackIconController@store')->name('modpacks.icon.store');
 Route::delete('/modpacks/{modpack}/icon', 'ModpackIconController@destroy')->name('modpacks.icon.destroy');
 Route::apiResource('modpacks', 'ModpackController');
+
+// Build Routes ..
+Route::apiResource('modpacks.builds', 'ModpackBuildController');

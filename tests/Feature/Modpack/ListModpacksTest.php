@@ -11,6 +11,7 @@
 
 namespace TechnicPack\SolderFramework\Tests\Feature\Modpack;
 
+use TechnicPack\SolderFramework\Build;
 use TechnicPack\SolderFramework\Modpack;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -50,5 +51,20 @@ class ListModpacksTest extends TestCase
         $response = $this->getJson('/api/modpacks');
 
         $response->assertStatus(401);
+    }
+
+    /** @test **/
+    public function the_builds_related_to_a_modpack_can_be_included()
+    {
+        $modpack = factory(Modpack::class)->create();
+        $modpack->builds()->saveMany([
+            factory(Build::class)->make(['tag' => '1.0.0a']),
+            factory(Build::class)->make(['tag' => '1.0.0b']),
+        ]);
+
+        $response = $this->getJson('/api/modpacks?include=builds');
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure([['builds']]);
     }
 }

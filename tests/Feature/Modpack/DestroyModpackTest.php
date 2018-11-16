@@ -11,6 +11,9 @@
 
 namespace TechnicPack\SolderFramework\Tests\Feature\Modpack;
 
+use Illuminate\Http\UploadedFile;
+use TechnicPack\SolderFramework\Build;
+use Illuminate\Support\Facades\Storage;
 use TechnicPack\SolderFramework\Modpack;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,7 +26,6 @@ class DestroyModpackTest extends TestCase
     /** @test **/
     public function a_modpack_can_be_destroyed()
     {
-        $this->withoutExceptionHandling();
         $modpack = factory(Modpack::class)->create([
             'name' => 'Existing Modpack',
         ]);
@@ -67,5 +69,33 @@ class DestroyModpackTest extends TestCase
         $response = $this->deleteJson('/api/modpacks/99');
 
         $response->assertStatus(404);
+    }
+
+    /** @test **/
+    public function destroying_a_modpack_removes_the_icon_from_storage()
+    {
+        Storage::fake(config('solder.disk.icons'));
+        $storage = Storage::disk(config('solder.disk.icons'));
+        $icon = UploadedFile::fake()->image('icon.png', 50, 50);
+
+        $modpack = factory(Modpack::class)->create([
+            'icon_path' => $storage->putFile('icons', $icon),
+        ]);
+
+        $this->deleteJson("/api/modpacks/{$modpack->id}");
+
+        $storage->assertMissing("icons/{$icon->hashName()}");
+    }
+
+    /** @test **/
+    public function destroying_a_modpack_removes_related_builds()
+    {
+        $modpack = factory(Modpack::class)->create();
+        $modpack->builds()->save(factory(Build::class)->make());
+
+        $response = $this->deleteJson("/api/modpacks/{$modpack->id}");
+
+        $response->assertStatus(204);
+        $this->assertCount(0, Build::all());
     }
 }

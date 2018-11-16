@@ -11,6 +11,7 @@
 
 namespace TechnicPack\SolderFramework;
 
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Storage;
  * @property string slug
  * @property string icon_path
  * @property string icon
+ * @property Collection builds
  */
 class Modpack extends Model
 {
@@ -76,9 +78,20 @@ class Modpack extends Model
     {
         self::deleting(function (self $modpack) {
             $modpack->unsetIcon();
+            $modpack->builds->each->delete();
         });
 
         parent::boot();
+    }
+
+    /**
+     * Modpack builds.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function builds()
+    {
+        return $this->hasMany(Build::class);
     }
 
     /**
