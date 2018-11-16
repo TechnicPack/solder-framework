@@ -6,6 +6,7 @@
             </div>
             <div class="col d-md-flex justify-content-md-end text-uppercase">
                 <div class="ml-md-4">{{ modpack.name }}</div>
+                <div class="ml-md-4"><strong>{{ modpack.builds.length }}</strong> Builds</div>
             </div>
         </div>
 
@@ -15,19 +16,19 @@
                     <ul class="nav flex-column mb-4 ">
                         <li class="nav-item ">
                             <a class="nav-link active" href="#builds" aria-controls="builds" role="tab" data-toggle="tab">
-                                <svg class="icon-20 " viewBox="0 0 20 16 " xmlns="http://www.w3.org/2000/svg ">
-                                    <path d="M16 14v2H4v-2H0V2h4V0h12v2h4v12h-4zM14 3.5V2H6v12h8V3.5zm2 .5v8h2V4h-2zM4 4H2v8h2V4z" />
+                                <svg class="icon-20 " viewBox="0 0 20 20     " xmlns="http://www.w3.org/2000/svg ">
+                                    <path d="M0 10V2l2-2h8l10 10-10 10L0 10zm4.5-4a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
                                 </svg>
                                 Builds
                             </a>
                         </li>
 
                         <li class="nav-item ">
-                            <a class="nav-link" href="#meta" aria-controls="meta" role="tab" data-toggle="tab">
-                                <svg class="icon-20 " viewBox="0 0 20 20 " xmlns="http://www.w3.org/2000/svg ">
-                                    <path d="M0 10V2l2-2h8l10 10-10 10L0 10zm4.5-4a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+                            <a class="nav-link" href="#settings" aria-controls="settings" role="tab" data-toggle="tab">
+                                <svg viewBox="0 0 20 20 " xmlns="http://www.w3.org/2000/svg " class="icon-20 ">
+                                    <path d="M3.94 6.5L2.22 3.64l1.42-1.42L6.5 3.94c.52-.3 1.1-.54 1.7-.7L9 0h2l.8 3.24c.6.16 1.18.4 1.7.7l2.86-1.72 1.42 1.42-1.72 2.86c.3.52.54 1.1.7 1.7L20 9v2l-3.24.8c-.16.6-.4 1.18-.7 1.7l1.72 2.86-1.42 1.42-2.86-1.72c-.52.3-1.1.54-1.7.7L11 20H9l-.8-3.24c-.6-.16-1.18-.4-1.7-.7l-2.86 1.72-1.42-1.42 1.72-2.86c-.3-.52-.54-1.1-.7-1.7L0 11V9l3.24-.8c.16-.6.4-1.18.7-1.7zM10 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
                                 </svg>
-                                Meta
+                                Settings
                             </a>
                         </li>
                     </ul>
@@ -40,11 +41,11 @@
                     <!-- Builds -->
                     <div role="tabcard" class="tab-pane active" id="builds">
                         <modpack-create-build :modpack="modpack"></modpack-create-build>
-                        <modpack-current-builds :modpack="modpack"></modpack-current-builds>
+                        <modpack-current-builds :modpack="modpack" :builds="modpack.builds"></modpack-current-builds>
                     </div>
 
-                    <!-- Meta -->
-                    <div role="tabcard" class="tab-pane" id="meta">
+                    <!-- Settings -->
+                    <div role="tabcard" class="tab-pane" id="settings">
                         <modpack-icon :modpack="modpack"></modpack-icon>
                         <modpack-metadata :modpack="modpack"></modpack-metadata>
                     </div>
@@ -123,7 +124,7 @@
              * Get the modpack.
              */
             async getModpack() {
-                this.modpack = await Modpack.find(this.modpackId);
+                this.modpack = await Modpack.include('builds').find(this.modpackId);
             }
         }
     }
