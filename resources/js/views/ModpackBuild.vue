@@ -134,6 +134,50 @@
     }
 </script>
 
-<style scoped>
+<style>
+    .solder-tabs .nav-link {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        padding-top: 5px;
+        padding-right: 0;
+        padding-bottom: 5px;
+        padding-left: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #49545a;
+    }
 
+    .solder-tabs .nav-link svg {
+        fill: currentColor;
+        margin-right: 15px;
+        color: #9aa5ac;
+        -ms-flex-negative: 0;
+        flex-shrink: 0;
+    }
+
+    .solder-tabs .nav-link:hover {
+        font-weight: 600;
+        color: #42a2dc;
+    }
+
+    .solder-tabs .nav-link:hover svg {
+        fill: #42a2dc;
+    }
+
+    .solder-tabs .nav-link.active {
+        font-weight: 600;
+        color: #42a2dc;
+    }
+
+    .solder-tabs .nav-link.active svg {
+        fill: #42a2dc;
+    }
+
+    .solder-tabs .nav-link {
+        padding-bottom: 10px;
+    }
 </style>
