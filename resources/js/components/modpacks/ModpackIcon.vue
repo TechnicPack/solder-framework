@@ -25,8 +25,8 @@
 </template>
 
 <script>
-    import ErrorCollection from '../models/ErrorCollection'
-    import Solder from '../solder'
+    import ErrorCollection from '../../models/ErrorCollection'
+    import Solder from '../../solder'
 
     export default {
         props: ['modpack'],

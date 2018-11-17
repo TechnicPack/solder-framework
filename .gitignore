@@ -5,3 +5,4 @@ vendor
 coverage
 .idea
 .php_cs.cache
+/node_modules/

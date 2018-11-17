@@ -69,10 +69,10 @@
 
 <script>
     import Modpack from '../models/Modpack'
-    import ModpackCreateBuild from '../components/ModpackCreateBuild'
-    import ModpackCurrentBuilds from '../components/ModpackCurrentBuilds'
-    import ModpackIcon from '../components/ModpackIcon'
-    import ModpackMetadata from '../components/ModpackMetadata'
+    import ModpackCreateBuild from '../components/modpacks/ModpackCreateBuild'
+    import ModpackCurrentBuilds from '../components/modpacks/ModpackCurrentBuilds'
+    import ModpackIcon from '../components/modpacks/ModpackIcon'
+    import ModpackMetadata from '../components/modpacks/ModpackMetadata'
 
     export default {
         props: ['modpackId'],

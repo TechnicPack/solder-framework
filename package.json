@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "dependencies": {
+    "vue": "^2.5.17",
+    "vue-api-query": "^1.1.1",
+    "vue-router": "^3.0.1"
+  }
+}

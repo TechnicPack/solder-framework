@@ -52,7 +52,7 @@
 </template>
 
 <script>
-    import Modpack from '../models/Modpack'
+    import Modpack from '../../models/Modpack'
 
     export default {
         props: ['modpack'],

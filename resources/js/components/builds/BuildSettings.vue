@@ -1,11 +1,17 @@
 <template>
     <div class="card card-default">
-        <div class="card-header">Add Build</div>
+        <div class="card-header">Build Settings</div>
 
         <div class="card-body">
+            <!-- Success Message -->
+            <div class="alert alert-success" v-if="successful">
+                Build settings have been updated!
+            </div>
+
             <form role="form">
+                <!-- Tag -->
                 <div class="form-group row">
-                    <label class="col-md-4 col-form-label text-md-right">Build Tag</label>
+                    <label class="col-md-4 col-form-label text-md-right">Tag</label>
 
                     <div class="col-md-6">
                         <input type="text" class="form-control" name="name" v-model="form.tag" :class="{'is-invalid': form.errors.has('tag')}">
@@ -13,10 +19,6 @@
                         <span class="invalid-feedback" v-show="form.errors.has('tag')">
                             {{ form.errors.get('tag') }}
                         </span>
-
-                        <small class="form-text text-muted" v-show="!form.errors.has('tag')">
-                            Enter a unique identifier for this build (aka version or name)
-                        </small>
                     </div>
                 </div>
 
@@ -33,14 +35,40 @@
                     </div>
                 </div>
 
+                <!-- Java Version -->
+                <div class="form-group row">
+                    <label class="col-md-4 col-form-label text-md-right">Java Version</label>
+
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="slug" v-model="form.java_version" :class="{'is-invalid': form.errors.has('java_version')}">
+
+                        <span class="invalid-feedback" v-show="form.errors.has('java_version')">
+                            {{ form.errors.get('java_version') }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Memory -->
+                <div class="form-group row">
+                    <label class="col-md-4 col-form-label text-md-right">Memory</label>
+
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="slug" v-model="form.java_memory" :class="{'is-invalid': form.errors.has('java_memory')}">
+
+                        <span class="invalid-feedback" v-show="form.errors.has('java_memory')">
+                            {{ form.errors.get('java_memory') }}
+                        </span>
+                    </div>
+                </div>
+
                 <!-- Update Button -->
                 <div class="form-group row mb-0">
                     <div class="col-md-6 offset-md-4">
                         <button type="submit" class="btn btn-primary"
-                                @click.prevent="create"
+                                @click.prevent="update"
                                 :disabled="form.busy">
 
-                            Create
+                            Update
                         </button>
                     </div>
                 </div>
@@ -50,14 +78,16 @@
 </template>
 
 <script>
-    import Build from '../models/Build'
+    import Modpack from '../../models/Modpack'
+    import Build from '../../models/Build'
 
     export default {
-        props: ['modpack'],
+        props: ['modpack', 'build'],
 
-        /**
-         * The component's data.
-         */
+
+       /**
+        * The component's data.
+        */
         data() {
             return {
                 form: new Build({}),
@@ -65,11 +95,22 @@
             }
         },
 
+
+        /**
+         * Watch for changes.
+         */
+        watch: {
+            build: function(query) {
+                this.form = new Build(this.build)
+            }
+        },
+
+
         methods: {
             /**
-             * Create the new build.
+             * Update the modpack's icon.
              */
-            create(e) {
+            update(e) {
                 e.preventDefault();
 
                 var self = this;
@@ -79,9 +120,8 @@
                 this.form.for(this.modpack).save()
                     .then(
                         () => {
-                            Bus.$emit('updateModpack');
+                            Bus.$emit('updateBuild');
                             this.form.finishProcessing();
-                            this.form = new Build({});
                             this.successful = true;
                         },
                         (error) => {
@@ -93,7 +133,3 @@
         }
     }
 </script>
-
-<style scoped>
-
-</style>
