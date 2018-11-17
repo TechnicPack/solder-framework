@@ -5,7 +5,11 @@
                 <h4>Build Details</h4>
             </div>
             <div class="col d-md-flex justify-content-md-end text-uppercase">
-                <div class="ml-md-4"><a :href="modpackUrl">{{ modpack.name }}</a></div>
+                <div class="ml-md-4">
+                    <router-link :to="{ name: 'modpack', params: { modpackId: modpack.id }}">
+                        {{ modpack.name }}
+                    </router-link>
+                </div>
                 <div class="ml-md-4">{{ build.tag }}</div>
             </div>
         </div>

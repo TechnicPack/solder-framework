@@ -23,7 +23,11 @@
                 <tbody>
                 <tr  v-for="build in filteredBuilds">
                     <td>
-                        <a :href="buildUrl(build)">{{ build.tag }}</a>
+                        <router-link
+                                :to="{ name: 'build', params: { modpackId: modpack.id, buildId: build.id }}"
+                        >
+                            {{ build.tag }}
+                        </router-link>
                     </td>
                     <td>
                         {{ build.minecraft_version }}

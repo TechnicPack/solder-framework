@@ -28,6 +28,13 @@ class Solder
     public static $appRoutePrefix = 'app';
 
     /**
+     * The blade template to use for rendering the vue app.
+     *
+     * @var string
+     */
+    public static $appBladeTemplate = 'solder::app';
+
+    /**
      * Set the uri to prefix api routes with.
      *
      * @param $prefix
@@ -51,6 +58,20 @@ class Solder
     public static function prefixAppRoutesWith($prefix)
     {
         self::$appRoutePrefix = $prefix;
+
+        return new static();
+    }
+
+    /**
+     * Set the view template to render the solder application in.
+     *
+     * @param $view
+     *
+     * @return Solder
+     */
+    public static function useView($view)
+    {
+        self::$appBladeTemplate = $view;
 
         return new static();
     }
