@@ -16,3 +16,6 @@ Route::apiResource('modpacks', 'ModpackController');
 
 // Build Routes ..
 Route::apiResource('modpacks.builds', 'ModpackBuildController');
+
+// Mod Routes ..
+Route::apiResource('mods', 'ModController');
