@@ -44,6 +44,7 @@ class ModController extends BaseController
     public function index()
     {
         $mods = QueryBuilder::for($this->mod)
+            ->allowedIncludes('versions')
             ->get();
 
         return response()->json($mods);
@@ -78,6 +79,7 @@ class ModController extends BaseController
     public function show(Request $request)
     {
         $mod = QueryBuilder::for($this->mod)
+            ->allowedIncludes('versions')
             ->findOrFail($request->mod);
 
         return response()->json($mod);

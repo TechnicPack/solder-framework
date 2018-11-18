@@ -15,6 +15,7 @@ use TechnicPack\SolderFramework\Mod;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Http\Middleware\Authenticate;
+use TechnicPack\SolderFramework\Version;
 
 class ShowModTest extends TestCase
 {
@@ -57,5 +58,21 @@ class ShowModTest extends TestCase
         $response = $this->getJson('/api/mods/99');
 
         $response->assertStatus(404);
+    }
+
+    /** @test **/
+    public function the_child_version_data_can_be_included()
+    {
+        $mod = factory(Mod::class)->create();
+        $mod->versions()->saveMany([
+            factory(Version::class)->make(['tag' => '1.0.0a']),
+            factory(Version::class)->make(['tag' => '1.0.0b']),
+        ]);
+
+        $response = $this->getJson("/api/mods/{$mod->id}?include=versions");
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['versions']);
+        $response->assertJsonCount(2, 'versions');
     }
 }

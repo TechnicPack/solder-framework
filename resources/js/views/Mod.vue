@@ -41,7 +41,7 @@
                     <!-- Versions -->
                     <div role="tabcard" class="tab-pane active" id="versions">
                         <mod-create-version :mod="mod"></mod-create-version>
-                        <!--<mod-current-versions :mod="modpack" :versions="mod.versions"></mod-current-versions>-->
+                        <mod-current-versions :mod="mod" :versions="mod.versions"></mod-current-versions>
                     </div>
 
                     <!-- Settings -->
@@ -87,7 +87,9 @@
         */
         data() {
             return {
-                mod: [],
+                mod: {
+                    versions: []
+                }
             }
         },
 
@@ -121,7 +123,7 @@
              * Get the mod.
              */
             async getMod() {
-                this.mod = await Mod.find(this.modId);
+                this.mod = await Mod.include('versions').find(this.modId);
             }
         }
     }

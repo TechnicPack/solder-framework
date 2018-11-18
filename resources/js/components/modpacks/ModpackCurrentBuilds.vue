@@ -71,12 +71,6 @@
                     return build.tag.toLowerCase().indexOf(self.search.toLowerCase())>=0;
                 });
             }
-        },
-
-        methods: {
-            buildUrl(build) {
-                return '/modpacks/' + this.modpack.id + '/builds/' + build.id;
-            }
         }
     }
 </script>
