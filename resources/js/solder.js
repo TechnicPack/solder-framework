@@ -1,5 +1,4 @@
 import { Model } from 'vue-api-query';
-import Vue from 'vue';
 import Router from 'vue-router';
 import SolderRouter from './router';
 
@@ -7,10 +6,12 @@ import SolderRouter from './router';
  * Application Variables
  */
 let _apiBaseUrl = '/api';
+let _vue = null;
 
 export default class Solder {
     static get apiBaseUrl() { return _apiBaseUrl }
     static set apiBaseUrl(value) { _apiBaseUrl = value }
+    static set vue(value) { _vue = value }
     static get router() { return SolderRouter }
 
     /**
@@ -33,7 +34,7 @@ export default class Solder {
      * Configure third party integrations.
      */
     static configureIntegrations() {
-        Vue.use(Router);
+        _vue.use(Router);
         Model.$http = window.axios;
     }
 
@@ -41,7 +42,8 @@ export default class Solder {
      * Register Global Components.
      */
     static registerGlobalComponents() {
-        Vue.component('solder-app', require('./App'));
-        Vue.component('solder-nav-modpacks', require('./components/nav/NavModpacks'));
+        _vue.component('solder-app', require('./App'));
+        _vue.component('solder-nav-modpacks', require('./components/nav/NavModpacks'));
+        _vue.component('solder-nav-mods', require('./components/nav/NavMods'));
     }
 }
