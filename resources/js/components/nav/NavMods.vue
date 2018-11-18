@@ -1,5 +1,5 @@
 <template>
-    <li class="nav-item dropdown">
+    <li class="nav-item dropdown px-2">
         <a class="nav-link dropdown-toggle" href="#" id="modpack-dropdown-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Mods
         </a>
