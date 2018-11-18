@@ -28,4 +28,14 @@ class Mod extends Model
         'name',
         'modid',
     ];
+
+    /**
+     * Mod Versions.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function versions()
+    {
+        return $this->hasMany(config('solder.model.version'));
+    }
 }

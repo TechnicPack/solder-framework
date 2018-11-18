@@ -36,5 +36,6 @@ return [
         'modpack' => \TechnicPack\SolderFramework\Modpack::class,
         'build'   => \TechnicPack\SolderFramework\Build::class,
         'mod'     => \TechnicPack\SolderFramework\Mod::class,
+        'version' => \TechnicPack\SolderFramework\Version::class,
     ],
 ];
