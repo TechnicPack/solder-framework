@@ -71,9 +71,9 @@
 </template>
 
 <script>
-    import Modpack from "../models/Modpack";
-    import Build from "../models/Build";
-    import BuildSettings from "../components/builds/BuildSettings";
+    import Modpack from '../models/Modpack';
+    import Build from '../models/Build';
+    import BuildSettings from '../components/builds/BuildSettings';
 
     export default {
         props: ['modpackId', 'buildId'],

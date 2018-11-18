@@ -41,7 +41,7 @@ export default class Solder {
      * Register Global Components.
      */
     static registerGlobalComponents() {
-        Vue.component('solder-app', require("./components/App"));
-        Vue.component('solder-nav-modpacks', require("./components/nav/NavModpacks"));
+        Vue.component('solder-app', require('./App'));
+        Vue.component('solder-nav-modpacks', require('./components/nav/NavModpacks'));
     }
 }
