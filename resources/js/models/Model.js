@@ -29,6 +29,8 @@ export default class Model extends BaseModel {
     startProcessing() {
         this.errors.forget();
         this.busy = true;
+
+        return this;
     };
 
     /**
@@ -36,6 +38,8 @@ export default class Model extends BaseModel {
      */
     finishProcessing() {
         this.busy = false;
+
+        return this;
     };
 
     /**
@@ -44,6 +48,8 @@ export default class Model extends BaseModel {
     resetStatus() {
         this.errors.forget();
         this.busy = false;
+
+        return this;
     };
 
 
@@ -53,5 +59,7 @@ export default class Model extends BaseModel {
     setErrors(errors) {
         this.busy = false;
         this.errors.set(errors);
+
+        return this;
     };
 }
