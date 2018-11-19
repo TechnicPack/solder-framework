@@ -12,8 +12,8 @@
 namespace TechnicPack\SolderFramework\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Spatie\QueryBuilder\QueryBuilder;
+use TechnicPack\SolderFramework\Rules\Unique;
 use TechnicPack\SolderFramework\Rules\UrlSafe;
 use Illuminate\Routing\Controller as BaseController;
 
@@ -61,7 +61,7 @@ class ModpackController extends BaseController
     {
         $attributes = $request->validate([
             'name' => ['required'],
-            'slug' => ['required', new UrlSafe(), Rule::unique('modpacks')],
+            'slug' => ['required', new UrlSafe(), new Unique($this->modpack)],
         ]);
 
         $modpack = $this->modpack::create($attributes);
@@ -98,7 +98,7 @@ class ModpackController extends BaseController
 
         $attributes = $request->validate([
             'name' => ['required'],
-            'slug' => ['required', Rule::unique('modpacks')->ignore($modpack->id)],
+            'slug' => ['required', new Unique($this->modpack, $modpack->id)],
         ]);
 
         $modpack->update($attributes);
