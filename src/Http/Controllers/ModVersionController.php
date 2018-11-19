@@ -13,7 +13,6 @@ namespace TechnicPack\SolderFramework\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use TechnicPack\SolderFramework\Mod;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Routing\Controller as BaseController;
 

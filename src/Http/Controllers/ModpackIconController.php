@@ -13,7 +13,6 @@ namespace TechnicPack\SolderFramework\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use TechnicPack\SolderFramework\Models\Modpack;
 use Illuminate\Routing\Controller as BaseController;
 
 class ModpackIconController extends BaseController
@@ -21,7 +20,7 @@ class ModpackIconController extends BaseController
     /**
      * The modpack model.
      *
-     * @var Modpack
+     * @var \TechnicPack\SolderFramework\Modpack
      */
     protected $modpack;
 

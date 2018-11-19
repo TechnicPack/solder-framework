@@ -14,7 +14,6 @@ namespace TechnicPack\SolderFramework\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Spatie\QueryBuilder\QueryBuilder;
-use TechnicPack\SolderFramework\Modpack;
 use TechnicPack\SolderFramework\Rules\UrlSafe;
 use Illuminate\Routing\Controller as BaseController;
 
@@ -23,7 +22,7 @@ class ModpackController extends BaseController
     /**
      * The modpack model.
      *
-     * @var Modpack
+     * @var \TechnicPack\SolderFramework\Modpack
      */
     protected $modpack;
 
@@ -44,7 +43,7 @@ class ModpackController extends BaseController
      */
     public function index()
     {
-        $modpacks = QueryBuilder::for(Modpack::class)
+        $modpacks = QueryBuilder::for($this->modpack)
             ->allowedIncludes('builds')
             ->get();
 
@@ -79,7 +78,7 @@ class ModpackController extends BaseController
      */
     public function show(Request $request)
     {
-        $modpack = QueryBuilder::for(Modpack::class)
+        $modpack = QueryBuilder::for($this->modpack)
             ->allowedIncludes('builds')
             ->findOrFail($request->modpack);
 
