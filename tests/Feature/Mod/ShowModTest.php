@@ -12,10 +12,10 @@
 namespace TechnicPack\SolderFramework\Tests\Feature\Mod;
 
 use TechnicPack\SolderFramework\Mod;
+use TechnicPack\SolderFramework\Version;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Http\Middleware\Authenticate;
-use TechnicPack\SolderFramework\Version;
 
 class ShowModTest extends TestCase
 {
