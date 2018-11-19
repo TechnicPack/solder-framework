@@ -123,7 +123,7 @@
              * Get the build.
              */
             async getVersion() {
-                this.mod = await Mod.find(this.modpackId);
+                this.mod = await Mod.find(this.modId);
                 this.version = await this.mod.versions().find(this.versionId);
             }
         }
