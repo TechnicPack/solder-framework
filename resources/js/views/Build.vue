@@ -59,12 +59,32 @@
                         <span>,</span>
                         <strong>Build ID:</strong> {{ build.id }}
                     </div>
-                    <button title="Delete Server" class="btn btn-sm btn-secondary">
+                    <button title="Delete Server" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#deleteBuild">
                         Delete
                     </button>
                 </div>
             </div>
 
+        </div>
+
+        <div class="modal fade" id="deleteBuild" tabindex="-1" role="dialog" aria-labelledby="deleteBuildLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteBuildLabel">Delete?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        This will remove the build tagged <code>{{ build.tag }}</code> from {{ modpack.name }}. Are you sture you want to continue?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-outline-danger" @click="deleteBuild" >Delete Build</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -133,6 +153,16 @@
             async getBuild() {
                 this.modpack = await Modpack.find(this.modpackId);
                 this.build = await this.modpack.builds().find(this.buildId);
+            },
+
+            /**
+             * Delete the build.
+             */
+             async deleteBuild() {
+                await this.build.for(this.modpack).delete();
+                Bus.$emit('updateModpack');
+                $('#deleteBuild').modal('hide');
+                this.$router.push({ name: 'modpack', params: { modpackId: this.modpack.id }});
             }
         }
     }

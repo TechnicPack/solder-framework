@@ -59,12 +59,32 @@
                         <span>,</span>
                         <strong>Version ID:</strong> {{ version.id }}
                     </div>
-                    <button title="Delete Version" class="btn btn-sm btn-secondary">
+                    <button title="Delete Version" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#deleteVersion">
                         Delete
                     </button>
                 </div>
             </div>
 
+        </div>
+
+        <div class="modal fade" id="deleteVersion" tabindex="-1" role="dialog" aria-labelledby="deleteVersionLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteVersionLabel">Delete?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        This will remove the version tagged <code>{{ version.tag }}</code> from <strong>{{ mod.name }}</strong>. Are you sture you want to continue?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-outline-danger" @click="deleteVersion" >Delete Version</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -120,11 +140,21 @@
 
         methods: {
             /**
-             * Get the build.
+             * Get the version.
              */
             async getVersion() {
                 this.mod = await Mod.find(this.modId);
                 this.version = await this.mod.versions().find(this.versionId);
+            },
+
+            /**
+             * Delete the version.
+             */
+            async deleteVersion() {
+                await this.version.for(this.mod).delete();
+                Bus.$emit('updateMod');
+                $('#deleteVersion').modal('hide');
+                this.$router.push({ name: 'mod', params: { modId: this.mod.id }});
             }
         }
     }

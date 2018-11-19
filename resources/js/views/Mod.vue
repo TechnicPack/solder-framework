@@ -56,12 +56,32 @@
                         <span>,</span>
                         <strong>ModID:</strong> {{ mod.modid }}
                     </div>
-                    <button title="Delete Server" class="btn btn-sm btn-secondary">
+                    <button title="Delete Server" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#deleteMod">
                         Delete
                     </button>
                 </div>
             </div>
 
+        </div>
+
+        <div class="modal fade" id="deleteMod" tabindex="-1" role="dialog" aria-labelledby="deleteModLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModLabel">Delete?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        This will remove the mod named <code>{{ mod.name }}</code> and <strong>{{ mod.versions.length }}</strong> versions under it. Are you sture you want to continue?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-outline-danger" @click="deleteMod" >Delete Mod</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -124,6 +144,16 @@
              */
             async getMod() {
                 this.mod = await Mod.include('versions').find(this.modId);
+            },
+
+            /**
+             * Delete the mod.
+             */
+            async deleteMod() {
+                await this.mod.delete();
+                Bus.$emit('updateMod');
+                $('#deleteMod').modal('hide');
+                this.$router.push({ name: 'dashboard'});
             }
         }
     }
