@@ -48,7 +48,7 @@ class Build extends Model
     }
 
     /**
-     * Scope a query to only include popular users.
+     * Scope a query to only include builds for the given modpack.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @param int|Model                             $id
