@@ -44,7 +44,7 @@ class Version extends Model
     }
 
     /**
-     * Scope a query to only include popular users.
+     * Scope a query to only include versions for the given mod.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @param int|Model                             $id
