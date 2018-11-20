@@ -22,24 +22,29 @@ class ShowModTest extends TestCase
     use RefreshDatabase;
 
     /** @test **/
-    public function a_mod_can_be_shown()
+    public function it_shows_a_mod()
     {
         $mod = factory(Mod::class)->create([
-            'name'  => 'Example Mod',
-            'modid' => 'example-mod',
+            'name'        => 'Example Mod',
+            'modid'       => 'example-mod',
+            'author'      => 'John Doe',
+            'url'         => 'http://google.com',
+            'description' => 'Mod description.',
         ]);
 
         $response = $this->getJson("/api/mods/{$mod->id}");
 
         $response->assertStatus(200);
         $response->assertJsonFragment([
-            'name'  => 'Example Mod',
-            'modid' => 'example-mod',
-        ]);
+            'name'        => 'Example Mod',
+            'modid'       => 'example-mod',
+            'author'      => 'John Doe',
+            'url'         => 'http://google.com',
+            'description' => 'Mod description.', ]);
     }
 
     /** @test **/
-    public function showing_a_mod_requires_authentication()
+    public function it_drops_unauthenticated_requests()
     {
         $this->withMiddleware([
             Authenticate::class,
@@ -53,7 +58,7 @@ class ShowModTest extends TestCase
     }
 
     /** @test */
-    public function showing_an_invalid_mod_returns_a_404_error()
+    public function it_drops_invalid_requests()
     {
         $response = $this->getJson('/api/mods/99');
 
@@ -61,7 +66,7 @@ class ShowModTest extends TestCase
     }
 
     /** @test **/
-    public function the_child_version_data_can_be_included()
+    public function it_can_include_versions()
     {
         $mod = factory(Mod::class)->create();
         $mod->versions()->saveMany([

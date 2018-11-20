@@ -7,6 +7,13 @@
             <div class="col d-md-flex justify-content-md-end text-uppercase">
                 <div class="ml-md-4">{{ mod.name }}</div>
                 <!--<div class="ml-md-4"><strong>{{ mod.versions.length }}</strong> Builds</div>-->
+                <div v-if="mod.url" class="ml-md-4">
+                    <a :href="mod.url" target="_blank">
+                        <svg class="icon-20 fill-current" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 10c0 5.523-4.477 10-10 10S0 15.523 0 10 4.477 0 10 0s10 4.477 10 10zm-2 0a8 8 0 1 0-16 0 8 8 0 0 0 16 0zm-8 2H5V8h5V5l5 5-5 5v-3z"></path>
+                        </svg>
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -204,5 +211,9 @@
 
     .solder-tabs .nav-link {
         padding-bottom: 10px;
+    }
+
+    .fill-current {
+        fill: currentColor;
     }
 </style>

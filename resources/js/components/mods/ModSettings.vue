@@ -22,7 +22,7 @@
                     </div>
                 </div>
 
-                <!-- ModID -->
+                <!-- Mod ID -->
                 <div class="form-group row">
                     <label class="col-md-4 col-form-label text-md-right">ModID</label>
 
@@ -31,6 +31,45 @@
 
                         <span class="invalid-feedback" v-show="form.errors.has('modid')">
                             {{ form.errors.get('modid') }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Author -->
+                <div class="form-group row">
+                    <label class="col-md-4 col-form-label text-md-right">Author</label>
+
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="author" v-model="form.author" :class="{'is-invalid': form.errors.has('author')}">
+
+                        <span class="invalid-feedback" v-show="form.errors.has('author')">
+                            {{ form.errors.get('author') }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- URL -->
+                <div class="form-group row">
+                    <label class="col-md-4 col-form-label text-md-right">URL</label>
+
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="modid" v-model="form.url" :class="{'is-invalid': form.errors.has('url')}">
+
+                        <span class="invalid-feedback" v-show="form.errors.has('url')">
+                            {{ form.errors.get('url') }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="form-group row">
+                    <label class="col-md-4 col-form-label text-md-right">Description</label>
+
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="description" v-model="form.description" :class="{'is-invalid': form.errors.has('description')}">
+
+                        <span class="invalid-feedback" v-show="form.errors.has('description')">
+                            {{ form.errors.get('description') }}
                         </span>
                     </div>
                 </div>
@@ -86,11 +125,11 @@
             update(e) {
                 e.preventDefault();
 
-                var self = this;
 
-                this.form.startProcessing();
                 this.successful = false;
-                this.form.save()
+                this.form
+                    .startProcessing()
+                    .save()
                     .then(
                         () => {
                             Bus.$emit('updateMod');
@@ -98,8 +137,9 @@
                             this.successful = true;
                         },
                         (error) => {
-                            self.form.setErrors(error.response.data.errors);
-                            this.form.finishProcessing();
+                            this.form
+                                .setErrors(error.response.data.errors)
+                                .finishProcessing();
                         }
                     );
             }

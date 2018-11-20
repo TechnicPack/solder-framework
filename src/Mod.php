@@ -27,6 +27,9 @@ class Mod extends Model
     protected $fillable = [
         'name',
         'modid',
+        'author',
+        'url',
+        'description',
     ];
 
     /**

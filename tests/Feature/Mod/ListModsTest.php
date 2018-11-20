@@ -22,7 +22,7 @@ class ListModsTest extends TestCase
     use RefreshDatabase;
 
     /** @test **/
-    public function mods_can_be_listed()
+    public function it_lists_mods()
     {
         $modA = factory(Mod::class)->create();
         $modB = factory(Mod::class)->create();
@@ -32,17 +32,23 @@ class ListModsTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonCount(2);
         $response->assertJsonFragment([
-            'name'  => $modA->name,
-            'modid' => $modA->modid,
+            'name'        => $modA->name,
+            'modid'       => $modA->modid,
+            'author'      => $modA->author,
+            'url'         => $modA->url,
+            'description' => $modA->description,
         ]);
         $response->assertJsonFragment([
-            'name'  => $modB->name,
-            'modid' => $modB->modid,
+            'name'        => $modB->name,
+            'modid'       => $modB->modid,
+            'author'      => $modB->author,
+            'url'         => $modB->url,
+            'description' => $modB->description,
         ]);
     }
 
     /** @test **/
-    public function listing_mods_requires_authentication()
+    public function it_drops_unauthenticated_requests()
     {
         $this->withMiddleware([
             Authenticate::class,
@@ -54,7 +60,7 @@ class ListModsTest extends TestCase
     }
 
     /** @test **/
-    public function the_versions_related_to_a_mod_can_be_included()
+    public function it_can_include_versions()
     {
         $mod = factory(Mod::class)->create();
         $mod->versions()->saveMany([

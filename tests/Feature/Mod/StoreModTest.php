@@ -21,23 +21,29 @@ class StoreModTest extends TestCase
     use RefreshDatabase;
 
     /** @test **/
-    public function store_a_mod()
+    public function it_stores_a_mod()
     {
         $response = $this->postJson('/api/mods', [
-            'name'  => 'Test Mod',
-            'modid' => 'test-mod',
+            'name'        => 'Test Mod',
+            'modid'       => 'test-mod',
+            'author'      => 'John Doe',
+            'url'         => 'http://google.com',
+            'description' => 'Mod description.',
         ]);
 
         $response->assertStatus(201);
         $this->assertCount(1, Mod::all());
         $response->assertJsonFragment([
-            'name'  => 'Test Mod',
-            'modid' => 'test-mod',
+            'name'        => 'Test Mod',
+            'modid'       => 'test-mod',
+            'author'      => 'John Doe',
+            'url'         => 'http://google.com',
+            'description' => 'Mod description.',
         ]);
     }
 
     /** @test **/
-    public function require_authentication()
+    public function it_drops_unauthenticated_requests()
     {
         $this->withMiddleware([
             Authenticate::class,
@@ -132,6 +138,51 @@ class StoreModTest extends TestCase
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('modid');
         $this->assertSame(0, Mod::count());
+    }
+
+    /** @test */
+    public function author_is_optional()
+    {
+        $response = $this->postJson('/api/mods', $this->validParams([
+            'author' => '',
+        ]));
+
+        $response->assertStatus(201);
+        $this->assertCount(1, Mod::all());
+    }
+
+    /** @test */
+    public function url_is_optional()
+    {
+        $response = $this->postJson('/api/mods', $this->validParams([
+            'url' => '',
+        ]));
+
+        $response->assertStatus(201);
+        $this->assertCount(1, Mod::all());
+    }
+
+    /** @test */
+    public function url_is_valid()
+    {
+        $response = $this->postJson('/api/mods', $this->validParams([
+            'url' => 'not-a-url',
+        ]));
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('url');
+        $this->assertSame(0, Mod::count());
+    }
+
+    /** @test */
+    public function description_is_optional()
+    {
+        $response = $this->postJson('/api/mods', $this->validParams([
+            'description' => '',
+        ]));
+
+        $response->assertStatus(201);
+        $this->assertCount(1, Mod::all());
     }
 
     /**
