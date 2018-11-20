@@ -23,7 +23,7 @@ class CreateModsTable extends Migration
         Schema::create('mods', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('modid');
+            $table->string('modid', 64);
             $table->timestamps();
         });
     }

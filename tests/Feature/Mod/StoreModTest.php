@@ -21,7 +21,7 @@ class StoreModTest extends TestCase
     use RefreshDatabase;
 
     /** @test **/
-    public function a_mod_can_be_stored()
+    public function store_a_mod()
     {
         $response = $this->postJson('/api/mods', [
             'name'  => 'Test Mod',
@@ -37,7 +37,7 @@ class StoreModTest extends TestCase
     }
 
     /** @test **/
-    public function storing_a_mod_requires_authentication()
+    public function require_authentication()
     {
         $this->withMiddleware([
             Authenticate::class,
@@ -50,7 +50,7 @@ class StoreModTest extends TestCase
     }
 
     /** @test */
-    public function the_name_field_is_required_to_store_a_mod()
+    public function name_is_required()
     {
         $response = $this->postJson('/api/mods', $this->validParams([
             'name' => '',
@@ -62,7 +62,7 @@ class StoreModTest extends TestCase
     }
 
     /** @test */
-    public function the_modid_field_is_required_to_store_a_mod()
+    public function modid_is_required()
     {
         $response = $this->postJson('/api/mods', $this->validParams([
             'modid' => '',
@@ -74,7 +74,7 @@ class StoreModTest extends TestCase
     }
 
     /** @test */
-    public function the_modid_field_must_be_unique_to_store_a_mod()
+    public function modid_is_unique()
     {
         factory(Mod::class)->create(['modid' => 'existing-mod']);
 
@@ -88,12 +88,48 @@ class StoreModTest extends TestCase
     }
 
     /** @test */
-    public function the_modid_field_must_not_contain_spaces_or_special_characters()
+    public function modid_cannot_contain_symbols()
     {
         $response = $this->postJson('/api/mods', $this->validParams([
-            'modid' => 'spaces and symbols!',
+            'modid' => 'aa!',
         ]));
 
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('modid');
+        $this->assertSame(0, Mod::count());
+    }
+
+    /** @test */
+    public function modid_cannot_contain_spaces()
+    {
+        $response = $this->postJson('/api/mods', $this->validParams([
+            'modid' => 'a a',
+        ]));
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('modid');
+        $this->assertSame(0, Mod::count());
+    }
+
+    /** @test */
+    public function modid_cannot_contain_capitals()
+    {
+        $response = $this->postJson('/api/mods', $this->validParams([
+            'modid' => 'AA',
+        ]));
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('modid');
+        $this->assertSame(0, Mod::count());
+    }
+
+    /** @test */
+    public function modid_cannot_exceed_64_characters()
+    {
+        $response = $this->postJson('/api/mods', $this->validParams([
+            'modid' => str_repeat('a', 65),
+        ]));
+
+        $response->assertStatus(422);
         $response->assertJsonValidationErrors('modid');
         $this->assertSame(0, Mod::count());
     }

@@ -21,7 +21,7 @@ class UpdateModTest extends TestCase
     use RefreshDatabase;
 
     /** @test **/
-    public function a_mod_can_be_updated()
+    public function update_a_mod()
     {
         $mod = factory(Mod::class)->create([
             'name'  => 'Existing Mod',
@@ -44,7 +44,7 @@ class UpdateModTest extends TestCase
     }
 
     /** @test **/
-    public function updating_a_mod_requires_authentication()
+    public function drop_unauthenticated_requests()
     {
         $this->withMiddleware([
             Authenticate::class,
@@ -63,7 +63,7 @@ class UpdateModTest extends TestCase
     }
 
     /** @test */
-    public function updating_an_invalid_mod_returns_a_404_error()
+    public function drop_requests_for_invalid_mod()
     {
         $response = $this->putJson('/api/mods/99', $this->validParams());
 
@@ -71,7 +71,7 @@ class UpdateModTest extends TestCase
     }
 
     /** @test */
-    public function the_name_is_required_to_update_a_mod()
+    public function name_is_required()
     {
         $mod = factory(Mod::class)->create();
 
@@ -84,7 +84,7 @@ class UpdateModTest extends TestCase
     }
 
     /** @test */
-    public function the_modid_field_is_required_to_update_a_mod()
+    public function modid_is_required()
     {
         $mod = factory(Mod::class)->create();
 
@@ -97,7 +97,7 @@ class UpdateModTest extends TestCase
     }
 
     /** @test */
-    public function the_slug_field_must_be_unique_to_update_a_mod()
+    public function modid_is_unique()
     {
         $modA = factory(Mod::class)->create(['modid' => 'existing-mod']);
         $modB = factory(Mod::class)->create();
@@ -111,7 +111,7 @@ class UpdateModTest extends TestCase
     }
 
     /** @test */
-    public function the_original_modid_field_may_be_resubmitted_when_updating_a_mod()
+    public function current_modid_may_be_resubmitted()
     {
         $mod = factory(Mod::class)->create(['modid' => 'existing-mod']);
 
@@ -120,6 +120,47 @@ class UpdateModTest extends TestCase
         ]));
 
         $response->assertStatus(200);
+    }
+
+    /** @test */
+    public function modid_cannot_contain_spaces()
+    {
+        $mod = factory(Mod::class)->create($this->originalParams());
+
+        $response = $this->putJson("/api/mods/{$mod->id}", $this->validParams([
+            'modid' => 'a a',
+        ]));
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('modid');
+        $this->assertArraySubset($this->originalParams(), $mod->fresh()->getAttributes());
+    }
+
+    /** @test */
+    public function modid_cannot_contain_capitals()
+    {
+        $mod = factory(Mod::class)->create($this->originalParams());
+
+        $response = $this->putJson("/api/mods/{$mod->id}", $this->validParams([
+            'modid' => 'AA',
+        ]));
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('modid');
+        $this->assertArraySubset($this->originalParams(), $mod->fresh()->getAttributes());
+    }
+
+    /** @test */
+    public function modid_cannot_exceed_64_characters()
+    {
+        $mod = factory(Mod::class)->create($this->originalParams());
+
+        $response = $this->putJson("/api/mods/{$mod->id}", $this->validParams([
+            'modid' => str_repeat('a', 65),
+        ]));
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('modid');
+        $this->assertArraySubset($this->originalParams(), $mod->fresh()->getAttributes());
     }
 
     /**
