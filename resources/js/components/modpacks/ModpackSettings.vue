@@ -1,11 +1,11 @@
 <template>
     <div class="card card-default">
-        <div class="card-header">Modpack Metadata</div>
+        <div class="card-header">Modpack Settings</div>
 
         <div class="card-body">
             <!-- Success Message -->
             <div class="alert alert-success" v-if="successful">
-                Modpack metadata has been updated!
+                Modpack settings have been updated!
             </div>
 
             <form role="form">
@@ -106,7 +106,3 @@
         }
     }
 </script>
-
-<style scoped>
-
-</style>

@@ -53,7 +53,21 @@
          */
         data() {
             return {
-                modpack: new Modpack({}),
+                modpack: new Modpack({
+                    name: '',
+                    slug: '',
+                }),
+            }
+        },
+
+        watch: {
+            /**
+             * Watch the name for changes.
+             */
+            'modpack.name': function (val, oldVal) {
+                if (this.modpack.slug === '' || this.modpack.slug === oldVal.toLowerCase().replace(/[\s\W-]+/g, '-')) {
+                    this.modpack.slug = val.toLowerCase().replace(/[\s\W-]+/g, '-');
+                }
             }
         },
 

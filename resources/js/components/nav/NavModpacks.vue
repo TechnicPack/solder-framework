@@ -9,8 +9,11 @@
                          :key="modpack.id"
                          :to="{ name: 'modpack', params: { modpackId: modpack.id }}"
             >
+                <img :src="modpack.icon" class="icon-xs"><i class="fa fa-btn"></i>
                 {{ modpack.name }}
             </router-link>
+
+            <h6 class="dropdown-header" v-if="modpacks.length === 0">No Modpacks</h6>
         </div>
     </li>
 </template>
@@ -54,3 +57,11 @@
         }
     }
 </script>
+
+<style>
+    .icon-xs {
+        display: inline-block;
+        height: 20px;
+        width: 20px;
+    }
+</style>

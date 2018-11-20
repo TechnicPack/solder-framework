@@ -12,9 +12,10 @@
             </div>
         </div>
 
-        <div class="table-responsive">
+        <div class="table-responsive" v-if="filteredModpacks.length">
             <table class="table table-valign-middle mb-0">
                 <thead>
+                <th>&nbsp;</th>
                 <th>Name</th>
                 <th>Builds</th>
                 <th>&nbsp;</th>
@@ -22,6 +23,9 @@
 
                 <tbody>
                 <tr  v-for="modpack in filteredModpacks">
+                    <td class="td-fit pr-0">
+                        <img :src="modpack.icon" class="icon-50" />
+                    </td>
                     <td>
                         <router-link
                                 :to="{ name: 'modpack', params: { modpackId: modpack.id }}"
@@ -50,6 +54,13 @@
                 </tr>
                 </tbody>
             </table>
+        </div>
+
+        <div class="card-body text-center text-muted" v-else>
+            <svg class="fill-current dim m-3" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.4 18H20v2H0v-2h2.6L8 0h4l5.4 18zm-3.2-4H5.8l-1.2 4h10.8l-1.2-4zm-2.4-8H8.2L7 10h6l-1.2-4z"></path>
+            </svg>
+            <p class="lead">No modpack matched the given criteria.</p>
         </div>
     </div>
 </template>
@@ -103,3 +114,18 @@
         }
     }
 </script>
+
+<style>
+    .icon-50{
+        height: 50px;
+        width: 50px;
+    }
+
+     .fill-current {
+         fill: currentColor;
+     }
+
+    .dim {
+        opacity: 0.25;
+    }
+</style>

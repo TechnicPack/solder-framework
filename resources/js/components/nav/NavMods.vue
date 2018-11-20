@@ -11,6 +11,8 @@
             >
                 {{ mod.name }}
             </router-link>
+
+            <h6 class="dropdown-header" v-if="mods.length === 0">No Mods</h6>
         </div>
     </li>
 </template>

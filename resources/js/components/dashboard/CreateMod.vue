@@ -17,7 +17,7 @@
                 </div>
 
                 <div class="form-group row">
-                    <label class="col-md-4 col-form-label text-md-right">ModId</label>
+                    <label class="col-md-4 col-form-label text-md-right">Mod ID</label>
 
                     <div class="col-md-6">
                         <input type="text" class="form-control" name="modid" v-model="mod.modid" :class="{'is-invalid': mod.errors.has('modid')}">
@@ -53,7 +53,21 @@
          */
         data() {
             return {
-                mod: new Mod({}),
+                mod: new Mod({
+                    name: '',
+                    modid: '',
+                }),
+            }
+        },
+
+        watch: {
+            /**
+             * Watch the name for changes.
+             */
+            'mod.name': function (val, oldVal) {
+                if (this.mod.modid === '' || this.mod.modid === oldVal.toLowerCase().replace(/[\s\W-]+/g, '')) {
+                    this.mod.modid = val.toLowerCase().replace(/[\s\W-]+/g, '');
+                }
             }
         },
 

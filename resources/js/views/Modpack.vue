@@ -47,7 +47,7 @@
                     <!-- Settings -->
                     <div role="tabcard" class="tab-pane" id="settings">
                         <modpack-icon :modpack="modpack"></modpack-icon>
-                        <modpack-metadata :modpack="modpack"></modpack-metadata>
+                        <modpack-settings :modpack="modpack"></modpack-settings>
                     </div>
                 </div>
 
@@ -92,7 +92,7 @@
     import ModpackCreateBuild from '../components/modpacks/ModpackCreateBuild'
     import ModpackCurrentBuilds from '../components/modpacks/ModpackCurrentBuilds'
     import ModpackIcon from '../components/modpacks/ModpackIcon'
-    import ModpackMetadata from '../components/modpacks/ModpackMetadata'
+    import ModpackSettings from '../components/modpacks/ModpackSettings'
 
     export default {
         props: ['modpackId'],
@@ -101,7 +101,7 @@
             ModpackCreateBuild,
             ModpackCurrentBuilds,
             ModpackIcon,
-            ModpackMetadata,
+            ModpackSettings,
         },
 
 
