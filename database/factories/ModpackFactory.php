@@ -17,3 +17,12 @@ $factory->define(\TechnicPack\SolderFramework\Modpack::class, function (Faker $f
         'slug' => $faker->slug,
     ];
 });
+
+$factory->state(\TechnicPack\SolderFramework\Modpack::class, 'with-icon', function (Faker $faker) {
+    \Illuminate\Support\Facades\Storage::fake(config('solder.disk.icons'));
+    $file = \Illuminate\Http\UploadedFile::fake()->image('modpack-icon.png');
+
+    return [
+        'icon_path' => $file->store('icons', config('solder.disk.icons')),
+    ];
+});

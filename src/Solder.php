@@ -75,4 +75,14 @@ class Solder
 
         return new static();
     }
+
+    /**
+     * Get the current Solder version.
+     *
+     * @return string
+     */
+    public static function version()
+    {
+        return '0.9.0';
+    }
 }
