@@ -11,6 +11,7 @@
 
 namespace TechnicPack\SolderFramework;
 
+use Emgag\Flysystem\Hash\HashPlugin;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
@@ -135,6 +136,14 @@ class Version extends Model
         return $this->save();
     }
 
+    public function refreshPackageMeta()
+    {
+        $this->package_hash = $this->storage()->hash($this->package, 'md5');
+        $this->package_size = $this->storage()->size($this->package);
+
+        return $this->save();
+    }
+
     /**
      * Get the filesystem instance.
      *
@@ -142,6 +151,9 @@ class Version extends Model
      */
     private function storage()
     {
-        return Storage::disk(config('solder.disk.files'));
+        $filesystem = Storage::disk(config('solder.disk.files'));
+        $filesystem->addPlugin(new HashPlugin());
+
+        return $filesystem;
     }
 }

@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.1",
+        "emgag/flysystem-hash": "^1.0",
         "spatie/laravel-query-builder": "^1.11"
     },
     "require-dev": {
