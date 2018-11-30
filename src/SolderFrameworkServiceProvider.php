@@ -11,6 +11,7 @@
 
 namespace TechnicPack\SolderFramework;
 
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -34,6 +35,15 @@ class SolderFrameworkServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/vendor/solder'),
         ], 'solder-views');
+
+        // Add getHash method to UploadedFile class
+        UploadedFile::macro('getHash', function ($algo = 'md5') {
+            if (! \in_array($algo, hash_algos(), true)) {
+                throw new \InvalidArgumentException('Hash algorithm '.$algo.' is not supported');
+            }
+
+            return hash_file($algo, $this->path());
+        });
     }
 
     /**

@@ -19,3 +19,14 @@ $factory->define(\TechnicPack\SolderFramework\Version::class, function (Faker $f
         },
     ];
 });
+
+$factory->state(\TechnicPack\SolderFramework\Version::class, 'with-package', function (Faker $faker) {
+    $file = \Illuminate\Http\UploadedFile::fake()->create('example_package-1.0.0.zip');
+
+    return [
+        'package'      => $file->store('files', config('solder.disk.files')),
+        'package_name' => $file->getClientOriginalName(),
+        'package_size' => $file->getSize(),
+        'package_hash' => $file->getHash(),
+    ];
+});

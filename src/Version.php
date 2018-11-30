@@ -12,9 +12,34 @@
 namespace TechnicPack\SolderFramework;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
+/**
+ * @property string package
+ * @property string package_name
+ * @property int package_size
+ * @property string package_hash
+ */
 class Version extends Model
 {
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'package_url',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'package_size' => 'int',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -40,7 +65,19 @@ class Version extends Model
      */
     public function mod()
     {
-        return $this->belongsTo(Mod::class);
+        return $this->belongsTo(config('solder.model.mod'));
+    }
+
+    /**
+     * Package URL.
+     *
+     * @return mixed
+     */
+    public function getPackageUrlAttribute()
+    {
+        return optional($this->package, function ($path) {
+            return $this->storage()->url($path);
+        });
     }
 
     /**
@@ -58,5 +95,53 @@ class Version extends Model
         }
 
         return $query->where('mod_id', '=', $id);
+    }
+
+    /**
+     * Persist the package in storage.
+     *
+     * @param \Illuminate\Http\File|\Illuminate\Http\UploadedFile $package
+     *
+     * @return bool
+     */
+    public function setPackage($package)
+    {
+        if (null === $package) {
+            return $this->unsetPackage();
+        }
+
+        $this->package = $this->storage()->putFile('files', $package);
+        $this->package_name = $package->getClientOriginalName();
+        $this->package_size = $package->getSize();
+        $this->package_hash = $package->getHash();
+
+        return $this->save();
+    }
+
+    /**
+     * Remove the package from storage.
+     *
+     * @return bool
+     */
+    private function unsetPackage()
+    {
+        $this->storage()->delete($this->package);
+
+        $this->package = null;
+        $this->package_name = null;
+        $this->package_size = null;
+        $this->package_hash = null;
+
+        return $this->save();
+    }
+
+    /**
+     * Get the filesystem instance.
+     *
+     * @return \Illuminate\Contracts\Filesystem\Filesystem
+     */
+    private function storage()
+    {
+        return Storage::disk(config('solder.disk.files'));
     }
 }

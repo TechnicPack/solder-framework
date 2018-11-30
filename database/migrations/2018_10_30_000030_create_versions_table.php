@@ -24,6 +24,10 @@ class CreateVersionsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('mod_id');
             $table->string('tag');
+            $table->string('package')->nullable();
+            $table->string('package_name')->nullable();
+            $table->unsignedInteger('package_size')->nullable();
+            $table->string('package_hash')->nullable();
             $table->timestamps();
         });
     }

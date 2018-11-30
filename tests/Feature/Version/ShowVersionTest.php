@@ -31,10 +31,15 @@ class ShowVersionTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertExactJson([
-            'id'          => $version->id,
-            'tag'         => '1.0.0',
-            'created_at'  => $version->created_at->format('Y-m-d H:i:s'),
-            'updated_at'  => $version->updated_at->format('Y-m-d H:i:s'),
+            'id'           => $version->id,
+            'tag'          => '1.0.0',
+            'package'      => null,
+            'package_url'  => null,
+            'package_name' => null,
+            'package_size' => null,
+            'package_hash' => null,
+            'created_at'   => $version->created_at->format('Y-m-d H:i:s'),
+            'updated_at'   => $version->updated_at->format('Y-m-d H:i:s'),
         ]);
     }
 

@@ -21,6 +21,7 @@ return [
 
     'disk' => [
         'icons' => env('FILESYSTEM_ICONS', 'public'),
+        'files' => env('FILESYSTEM_FILES', 'public'),
     ],
 
     /*

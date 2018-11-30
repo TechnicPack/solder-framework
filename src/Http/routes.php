@@ -22,3 +22,5 @@ Route::apiResource('mods', 'ModController');
 
 // Version Routes ..
 Route::apiResource('mods.versions', 'ModVersionController');
+Route::post('/mods/{mod}/versions/{version}/package', 'PackageController@store')->name('mods.versions.package.store');
+Route::delete('/mods/{mod}/versions/{version}/package', 'PackageController@destroy')->name('mods.versions.package.destroy');
