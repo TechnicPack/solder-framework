@@ -17,6 +17,8 @@
                 <thead>
                 <th>Tag</th>
                 <th>Minecraft</th>
+                <th class="text-center">Latest</th>
+                <th class="text-center">Recommended</th>
                 <th>&nbsp;</th>
                 </thead>
 
@@ -31,6 +33,28 @@
                     </td>
                     <td>
                         {{ build.minecraft_version }}
+                    </td>
+                    <td class="text-center">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" :id="getRadioID(build, 'latest')"
+                                   class="custom-control-input"
+                                   :checked="modpack.latest && modpack.latest.id === build.id"
+                                   @click="setLatest(build)"
+                            >
+                            <label class="custom-control-label"
+                                   :for="getRadioID(build, 'latest')">&nbsp;</label>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" :id="getRadioID(build, 'recommended')"
+                                   class="custom-control-input"
+                                   :checked="modpack.recommended && modpack.recommended.id === build.id"
+                                   @click="setRecommended(build)"
+                            >
+                            <label class="custom-control-label"
+                                   :for="getRadioID(build, 'recommended')">&nbsp;</label>
+                        </div>
                     </td>
 
                     <!-- Edit Button -->
@@ -62,6 +86,9 @@
 </template>
 
 <script>
+    import LatestBuild from "../../models/LatestBuild";
+    import RecommendedBuild from "../../models/RecommendedBuild";
+
     export default {
         props: ['modpack', 'builds'],
 
@@ -78,6 +105,37 @@
                     return build.tag.toLowerCase().indexOf(self.search.toLowerCase())>=0;
                 });
             }
+        },
+
+        methods: {
+            getRadioID(build, type) {
+                return ['build', build.id, type].join('-');
+            },
+
+            async setLatest(build) {
+                let latestBuild = new LatestBuild({
+                    build_id: build.id
+                });
+
+                await latestBuild
+                    .for(this.modpack)
+                    .save(build);
+
+                Bus.$emit('updateModpack');
+            },
+
+             async setRecommended(build) {
+                 let recommendedBuild = new RecommendedBuild({
+                     build_id: build.id
+                 });
+
+                 await recommendedBuild
+                     .for(this.modpack)
+                     .save(build);
+
+                Bus.$emit('updateModpack');
+            },
+
         }
     }
 </script>

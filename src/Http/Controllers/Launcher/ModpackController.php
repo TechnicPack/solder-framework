@@ -85,8 +85,8 @@ class ModpackController extends BaseController
             'display_name' => $modpack->name,
             'url'          => null,
             'icon'         => $modpack->icon,
-            'recommended'  => null,
-            'latest'       => null,
+            'recommended'  => optional($modpack->recommended)->tag,
+            'latest'       => optional($modpack->latest)->tag,
             'builds'       => $modpack->builds->pluck('tag'),
         ];
     }

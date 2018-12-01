@@ -75,4 +75,43 @@ class ShowModpackTest extends TestCase
         $response->assertJsonStructure(['builds']);
         $response->assertJsonCount(2, 'builds');
     }
+
+    /** @test **/
+    public function the_latest_build_data_can_be_included()
+    {
+        $this->withoutExceptionHandling();
+        $modpack = factory(Modpack::class)->create();
+        $modpack->builds()->saveMany([
+            $buildA = factory(Build::class)->make(['tag' => '1.0.0a']),
+            $buildB = factory(Build::class)->make(['tag' => '1.0.0b']),
+        ]);
+        $modpack->latest()->associate($buildB);
+        $modpack->save();
+
+        $response = $this->getJson("/api/modpacks/{$modpack->id}?include=latest");
+
+        $response->assertStatus(200);
+        $response->assertJsonFragment([
+            'id' => $buildB->id,
+        ]);
+    }
+
+    /** @test **/
+    public function the_recommended_build_data_can_be_included()
+    {
+        $modpack = factory(Modpack::class)->create();
+        $modpack->builds()->saveMany([
+            $buildA = factory(Build::class)->make(['tag' => '1.0.0a']),
+            $buildB = factory(Build::class)->make(['tag' => '1.0.0b']),
+        ]);
+        $modpack->recommended()->associate($buildA);
+        $modpack->save();
+
+        $response = $this->getJson("/api/modpacks/{$modpack->id}?include=recommended");
+
+        $response->assertStatus(200);
+        $response->assertJsonFragment([
+            'id' => $buildA->id,
+        ]);
+    }
 }

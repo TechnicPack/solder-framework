@@ -41,6 +41,8 @@ class Modpack extends Model
      */
     protected $hidden = [
         'icon_path',
+        'latest_id',
+        'recommended_id',
     ];
 
     /**
@@ -92,6 +94,26 @@ class Modpack extends Model
     public function builds()
     {
         return $this->hasMany(Build::class);
+    }
+
+    /**
+     * The latest modpack build.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function latest()
+    {
+        return $this->belongsTo(Build::class);
+    }
+
+    /**
+     * The latest modpack build.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function recommended()
+    {
+        return $this->belongsTo(Build::class);
     }
 
     /**

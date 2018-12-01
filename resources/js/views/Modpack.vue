@@ -146,7 +146,9 @@
              * Get the modpack.
              */
             async getModpack() {
-                this.modpack = await Modpack.include('builds').find(this.modpackId);
+                this.modpack = await Modpack
+                    .include('builds', 'latest', 'recommended')
+                    .find(this.modpackId);
             },
 
             /**
