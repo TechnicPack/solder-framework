@@ -4,13 +4,13 @@
             Mods
         </a>
         <div class="dropdown-menu" aria-labelledby="modpack-dropdown-menu">
-            <router-link class="dropdown-item"
+            <a class="dropdown-item"
                          v-for="mod in mods"
                          :key="mod.id"
-                         :to="{ name: 'mod', params: { modId: mod.id }}"
+                         :href="getModUrl(mod.id)"
             >
                 {{ mod.name }}
-            </router-link>
+            </a>
 
             <h6 class="dropdown-header" v-if="mods.length === 0">No Mods</h6>
         </div>
@@ -52,6 +52,15 @@
              */
             async getMods() {
                 this.mods = await Mod.get();
+            },
+
+            getModUrl(modId) {
+                let resolved = this.$router.resolve({
+                    name: 'mod',
+                    params: { modId: modId }
+                });
+
+                return resolved.href;
             }
         }
     }
