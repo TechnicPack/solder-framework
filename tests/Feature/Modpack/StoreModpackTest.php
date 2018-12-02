@@ -26,11 +26,23 @@ class StoreModpackTest extends TestCase
         $response = $this->postJson('/api/modpacks', [
             'name' => 'Test Modpack',
             'slug' => 'test-modpack',
+            'url'  => 'http://example.com/example-mod',
         ]);
 
         $response->assertStatus(201);
-        $response->assertJsonFragment(['name' => 'Test Modpack']);
         $this->assertCount(1, Modpack::all());
+        tap(Modpack::first(), function ($modpack) use ($response) {
+            $this->assertSame('Test Modpack', $modpack->name);
+            $this->assertSame('test-modpack', $modpack->slug);
+            $this->assertSame('http://example.com/example-mod', $modpack->url);
+
+            $response->assertJsonFragment([
+                'id'   => $modpack->id,
+                'name' => 'Test Modpack',
+                'slug' => 'test-modpack',
+                'url'  => 'http://example.com/example-mod',
+            ]);
+        });
     }
 
     /** @test **/
@@ -40,10 +52,7 @@ class StoreModpackTest extends TestCase
             Authenticate::class,
         ]);
 
-        $response = $this->postJson('/api/modpacks', [
-            'name' => 'Test Modpack',
-            'slug' => 'test-modpack',
-        ]);
+        $response = $this->postJson('/api/modpacks', $this->validParams());
 
         $response->assertStatus(401);
         $this->assertCount(0, Modpack::all());
@@ -52,10 +61,9 @@ class StoreModpackTest extends TestCase
     /** @test */
     public function the_name_field_is_required_to_store_a_modpack()
     {
-        $response = $this->postJson('/api/modpacks', [
+        $response = $this->postJson('/api/modpacks', $this->validParams([
             'name' => '',
-            'slug' => 'test-modpack',
-        ]);
+        ]));
 
         $response->assertStatus(422);
         $this->assertSame(0, Modpack::count());
@@ -64,10 +72,9 @@ class StoreModpackTest extends TestCase
     /** @test */
     public function the_slug_field_is_required_to_store_a_modpack()
     {
-        $response = $this->postJson('/api/modpacks', [
-            'name' => 'Test Modpack',
+        $response = $this->postJson('/api/modpacks', $this->validParams([
             'slug' => '',
-        ]);
+        ]));
 
         $response->assertStatus(422);
         $this->assertSame(0, Modpack::count());
@@ -78,10 +85,9 @@ class StoreModpackTest extends TestCase
     {
         factory(Modpack::class)->create(['slug' => 'existing-modpack']);
 
-        $response = $this->postJson('/api/modpacks', [
-            'name' => 'Original Modpack',
+        $response = $this->postJson('/api/modpacks', $this->validParams([
             'slug' => 'existing-modpack',
-        ]);
+        ]));
 
         $response->assertStatus(422);
         $this->assertSame(1, Modpack::count());
@@ -90,12 +96,48 @@ class StoreModpackTest extends TestCase
     /** @test */
     public function the_slug_field_must_not_contain_spaces_or_special_characters()
     {
-        $response = $this->postJson('/api/modpacks', [
-            'name' => 'Original Modpack',
+        $response = $this->postJson('/api/modpacks', $this->validParams([
             'slug' => 'spaces and symbols!',
-        ]);
+        ]));
 
         $response->assertJsonValidationErrors('slug');
         $this->assertSame(0, Modpack::count());
+    }
+
+    /** @test **/
+    public function the_url_field_may_be_empty()
+    {
+        $response = $this->postJson('/api/modpacks', $this->validParams([
+            'url' => '',
+        ]));
+
+        $response->assertStatus(201);
+        $response->assertJsonMissingValidationErrors('url');
+        $this->assertCount(1, Modpack::all());
+    }
+
+    /** @test **/
+    public function the_url_field_must_be_a_url()
+    {
+        $response = $this->postJson('/api/modpacks', $this->validParams([
+            'url' => 'search google',
+        ]));
+
+        $response->assertJsonValidationErrors('url');
+        $this->assertSame(0, Modpack::count());
+    }
+
+    /**
+     * @param array $overrides
+     *
+     * @return array
+     */
+    private function validParams($overrides = [])
+    {
+        return array_merge([
+            'name' => 'Test Modpack',
+            'slug' => 'test-modpack',
+            'url'  => 'http://example.com/example-mod',
+        ], $overrides);
     }
 }

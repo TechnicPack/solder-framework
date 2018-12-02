@@ -78,12 +78,12 @@ class ModpackController extends BaseController
      *
      * @return array
      */
-    private function fullResource($modpack): array
+    private function fullResource($modpack)
     {
         return [
             'name'         => $modpack->slug,
             'display_name' => $modpack->name,
-            'url'          => null,
+            'url'          => $modpack->url,
             'icon'         => $modpack->icon,
             'recommended'  => optional($modpack->recommended)->tag,
             'latest'       => optional($modpack->latest)->tag,

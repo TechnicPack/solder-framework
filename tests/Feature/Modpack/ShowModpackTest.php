@@ -24,17 +24,23 @@ class ShowModpackTest extends TestCase
     /** @test **/
     public function a_modpack_can_be_shown()
     {
-        $modpack = factory(Modpack::class)->create([
+        $modpack = factory(Modpack::class)->states('with-icon')->create([
             'name' => 'Example Modpack',
             'slug' => 'example-modpack',
+            'url'  => 'http://example.com/example-mod',
         ]);
 
         $response = $this->getJson("/api/modpacks/{$modpack->id}");
 
         $response->assertStatus(200);
-        $response->assertJsonFragment([
-            'name' => 'Example Modpack',
-            'slug' => 'example-modpack',
+        $response->assertExactJson([
+            'id'         => $modpack->id,
+            'name'       => 'Example Modpack',
+            'slug'       => 'example-modpack',
+            'icon'       => $modpack->icon,
+            'url'        => 'http://example.com/example-mod',
+            'created_at' => $modpack->created_at->format('Y-m-d H:i:s'),
+            'updated_at' => $modpack->updated_at->format('Y-m-d H:i:s'),
         ]);
     }
 

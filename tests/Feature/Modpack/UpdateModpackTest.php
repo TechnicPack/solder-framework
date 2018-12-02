@@ -26,17 +26,29 @@ class UpdateModpackTest extends TestCase
         $modpack = factory(Modpack::class)->create([
             'name' => 'Existing Modpack',
             'slug' => 'existing-modpack',
+            'url'  => 'http://example.com/original',
         ]);
 
         $response = $this->putJson("/api/modpacks/{$modpack->id}", [
             'name' => 'Revised Modpack',
             'slug' => 'revised-modpack',
+            'url'  => 'http://example.com/revised',
         ]);
 
         $response->assertStatus(200);
-        $response->assertJsonFragment(['name' => 'Revised Modpack']);
         $this->assertCount(1, Modpack::all());
-        $this->assertSame('Revised Modpack', $modpack->fresh()->name);
+        tap(Modpack::first(), function ($modpack) use ($response) {
+            $this->assertSame('Revised Modpack', $modpack->name);
+            $this->assertSame('revised-modpack', $modpack->slug);
+            $this->assertSame('http://example.com/revised', $modpack->url);
+
+            $response->assertJsonFragment([
+                'id'   => $modpack->id,
+                'name' => 'Revised Modpack',
+                'slug' => 'revised-modpack',
+                'url'  => 'http://example.com/revised',
+            ]);
+        });
     }
 
     /** @test **/
@@ -46,28 +58,18 @@ class UpdateModpackTest extends TestCase
             Authenticate::class,
         ]);
 
-        $modpack = factory(Modpack::class)->create([
-            'name' => 'Existing Modpack',
-            'slug' => 'existing-modpack',
-        ]);
+        $modpack = factory(Modpack::class)->create($this->originalParams());
 
-        $response = $this->putJson("/api/modpacks/{$modpack->id}", [
-            'name' => 'Revised Modpack',
-            'slug' => 'revised-modpack',
-        ]);
+        $response = $this->putJson("/api/modpacks/{$modpack->id}", $this->validParams());
 
         $response->assertStatus(401);
-        $this->assertSame('Existing Modpack', $modpack->fresh()->name);
-        $this->assertSame('existing-modpack', $modpack->fresh()->slug);
+        $this->assertArraySubset($this->originalParams(), $modpack->fresh()->getAttributes());
     }
 
     /** @test */
     public function updating_an_invalid_modpack_returns_a_404_error()
     {
-        $response = $this->putJson('/api/modpacks/99', [
-            'name' => 'Revised Modpack',
-            'slug' => 'revised-modpack',
-        ]);
+        $response = $this->putJson('/api/modpacks/99', $this->validParams());
 
         $response->assertStatus(404);
     }
@@ -75,70 +77,108 @@ class UpdateModpackTest extends TestCase
     /** @test */
     public function the_name_field_is_required_to_update_a_modpack()
     {
-        $modpack = factory(Modpack::class)->create([
-            'name' => 'Existing Modpack',
-            'slug' => 'existing-modpack',
-        ]);
+        $modpack = factory(Modpack::class)->create($this->originalParams());
 
-        $response = $this->putJson("/api/modpacks/{$modpack->id}", [
+        $response = $this->putJson("/api/modpacks/{$modpack->id}", $this->validParams([
             'name' => '',
-            'slug' => 'test-modpack',
-        ]);
+        ]));
 
         $response->assertStatus(422);
-        $this->assertSame('Existing Modpack', $modpack->fresh()->name);
+        $response->assertJsonValidationErrors('name');
+        $this->assertArraySubset($this->originalParams(), $modpack->fresh()->getAttributes());
     }
 
     /** @test */
     public function the_slug_field_is_required_to_update_a_modpack()
     {
-        $modpack = factory(Modpack::class)->create([
-            'name' => 'Existing Modpack',
-            'slug' => 'existing-modpack',
-        ]);
+        $modpack = factory(Modpack::class)->create($this->originalParams());
 
-        $response = $this->putJson("/api/modpacks/{$modpack->id}", [
-            'name' => 'Test Modpack',
+        $response = $this->putJson("/api/modpacks/{$modpack->id}", $this->validParams([
             'slug' => '',
-        ]);
+        ]));
 
         $response->assertStatus(422);
-        $this->assertSame('existing-modpack', $modpack->fresh()->slug);
+        $response->assertJsonValidationErrors('slug');
+        $this->assertArraySubset($this->originalParams(), $modpack->fresh()->getAttributes());
     }
 
     /** @test */
     public function the_slug_field_must_be_unique_to_update_a_modpack()
     {
-        $modpackA = factory(Modpack::class)->create(['slug' => 'existing-modpack']);
-        $modpackB = factory(Modpack::class)->create([
-            'name' => 'Original Modpack',
-            'slug' => 'original-modpack',
-        ]);
+        factory(Modpack::class)->create(['slug' => 'duplicate-modpack']);
+        $modpack = factory(Modpack::class)->create($this->originalParams());
 
-        $response = $this->putJson("/api/modpacks/{$modpackB->id}", [
-            'name' => 'Original Modpack',
-            'slug' => 'existing-modpack',
-        ]);
+        $response = $this->putJson("/api/modpacks/{$modpack->id}", $this->validParams([
+            'slug' => 'duplicate-modpack',
+        ]));
 
         $response->assertStatus(422);
-        $this->assertSame('existing-modpack', $modpackA->fresh()->slug);
-        $this->assertSame('original-modpack', $modpackB->fresh()->slug);
+        $response->assertJsonValidationErrors('slug');
+        $this->assertArraySubset($this->originalParams(), $modpack->fresh()->getAttributes());
     }
 
     /** @test */
     public function the_original_slug_field_may_be_resubmitted_when_updating_a_modpack()
     {
-        $modpack = factory(Modpack::class)->create([
-            'name' => 'Original Modpack',
-            'slug' => 'original-modpack',
-        ]);
+        $modpack = factory(Modpack::class)->create($this->originalParams([
+            'slug' => 'existing-modpack',
+        ]));
 
-        $response = $this->putJson("/api/modpacks/{$modpack->id}", [
-            'name' => 'Original Modpack',
-            'slug' => 'original-modpack',
-        ]);
+        $response = $this->putJson("/api/modpacks/{$modpack->id}", $this->validParams([
+            'slug' => 'existing-modpack',
+        ]));
 
         $response->assertStatus(200);
-        $this->assertSame('original-modpack', $modpack->fresh()->slug);
+        $this->assertArraySubset($this->validParams(['slug' => 'existing-modpack']), $modpack->fresh()->getAttributes());
+    }
+
+    /** @test */
+    public function the_url_may_be_null()
+    {
+        $modpack = factory(Modpack::class)->create($this->originalParams());
+
+        $response = $this->putJson("/api/modpacks/{$modpack->id}", $this->validParams([
+            'url' => '',
+        ]));
+
+        $response->assertStatus(200);
+        $this->assertArraySubset($this->validParams(['url' => null]), $modpack->fresh()->getAttributes());
+    }
+
+    /** @test */
+    public function the_url_must_be_formatted_correctly()
+    {
+        $modpack = factory(Modpack::class)->create($this->originalParams());
+
+        $response = $this->putJson("/api/modpacks/{$modpack->id}", $this->validParams([
+            'url' => 'not a url',
+        ]));
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('url');
+        $this->assertArraySubset($this->originalParams(), $modpack->fresh()->getAttributes());
+    }
+
+    private function originalParams($overrides = [])
+    {
+        return array_merge([
+            'name' => 'Existing Modpack',
+            'slug' => 'existing-modpack',
+            'url'  => 'http://example.com/original',
+        ], $overrides);
+    }
+
+    /**
+     * @param array $overrides
+     *
+     * @return array
+     */
+    private function validParams($overrides = [])
+    {
+        return array_merge([
+            'name' => 'Revised Modpack',
+            'slug' => 'revised-modpack',
+            'url'  => 'http://example.com/revised',
+        ], $overrides);
     }
 }

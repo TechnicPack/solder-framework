@@ -26,7 +26,7 @@ class ShowModpackTest extends TestCase
     {
         $modpack = factory(Modpack::class)
             ->state('with-icon')
-            ->create(['name' => 'Example A', 'slug' => 'example-a']);
+            ->create(['name' => 'Example A', 'slug' => 'example-a', 'url' => 'http://example.com']);
         factory(Build::class)->create(['tag' => '1.0.0a', 'modpack_id' => $modpack->id]);
         factory(Build::class)->create(['tag' => '1.0.0b', 'modpack_id' => $modpack->id]);
 
@@ -36,7 +36,7 @@ class ShowModpackTest extends TestCase
         $response->assertExactJson([
             'name'         => 'example-a',
             'display_name' => 'Example A',
-            'url'          => null,
+            'url'          => 'http://example.com',
             'icon'         => Storage::url($modpack->icon_path),
             'recommended'  => null,
             'latest'       => null,

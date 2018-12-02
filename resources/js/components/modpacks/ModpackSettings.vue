@@ -35,6 +35,19 @@
                     </div>
                 </div>
 
+                <!-- URL -->
+                <div class="form-group row">
+                    <label class="col-md-4 col-form-label text-md-right">URL</label>
+
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="url" v-model="form.url" :class="{'is-invalid': form.errors.has('url')}">
+
+                        <span class="invalid-feedback" v-show="form.errors.has('url')">
+                            {{ form.errors.get('url') }}
+                        </span>
+                    </div>
+                </div>
+
                 <!-- Update Button -->
                 <div class="form-group row mb-0">
                     <div class="col-md-6 offset-md-4">

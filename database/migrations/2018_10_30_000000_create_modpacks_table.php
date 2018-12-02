@@ -25,6 +25,7 @@ class CreateModpacksTable extends Migration
             $table->string('name');
             $table->string('slug');
             $table->string('icon_path')->nullable();
+            $table->string('url')->nullable();
             $table->unsignedInteger('latest_id')->nullable();
             $table->unsignedInteger('recommended_id')->nullable();
             $table->timestamps();

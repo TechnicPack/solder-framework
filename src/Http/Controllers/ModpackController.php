@@ -62,6 +62,7 @@ class ModpackController extends BaseController
         $attributes = $request->validate([
             'name' => ['required'],
             'slug' => ['required', new UrlSafe(), new Unique($this->modpack)],
+            'url'  => ['nullable', 'url'],
         ]);
 
         $modpack = $this->modpack::create($attributes);
@@ -99,6 +100,7 @@ class ModpackController extends BaseController
         $attributes = $request->validate([
             'name' => ['required'],
             'slug' => ['required', new Unique($this->modpack, $modpack->id)],
+            'url'  => ['nullable', 'url'],
         ]);
 
         $modpack->update($attributes);
