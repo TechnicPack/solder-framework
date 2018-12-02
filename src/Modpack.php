@@ -94,7 +94,7 @@ class Modpack extends Model
      */
     public function builds()
     {
-        return $this->hasMany(Build::class);
+        return $this->hasMany(config('solder.model.build'));
     }
 
     /**
@@ -104,7 +104,7 @@ class Modpack extends Model
      */
     public function latest()
     {
-        return $this->belongsTo(Build::class);
+        return $this->belongsTo(config('solder.model.build'));
     }
 
     /**
@@ -114,7 +114,7 @@ class Modpack extends Model
      */
     public function recommended()
     {
-        return $this->belongsTo(Build::class);
+        return $this->belongsTo(config('solder.model.build'));
     }
 
     /**
