@@ -32,3 +32,6 @@ Route::apiResource('mods', 'ModController');
 Route::apiResource('mods.versions', 'ModVersionController');
 Route::post('/mods/{mod}/versions/{version}/package', 'PackageController@store')->name('mods.versions.package.store');
 Route::delete('/mods/{mod}/versions/{version}/package', 'PackageController@destroy')->name('mods.versions.package.destroy');
+
+// Dependency Routes ..
+Route::apiResource('dependencies', 'DependencyController')->only(['store', 'destroy']);

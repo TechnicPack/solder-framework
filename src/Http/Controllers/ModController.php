@@ -12,6 +12,7 @@
 namespace TechnicPack\SolderFramework\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\Filter;
 use Spatie\QueryBuilder\QueryBuilder;
 use TechnicPack\SolderFramework\Rules\Unique;
 use TechnicPack\SolderFramework\Rules\Lowercase;
@@ -45,6 +46,7 @@ class ModController extends BaseController
     {
         $mods = QueryBuilder::for($this->mod)
             ->allowedIncludes('versions')
+            ->allowedFilters(Filter::scope('not_in_build'))
             ->get();
 
         return response()->json($mods);

@@ -12,6 +12,7 @@
 namespace TechnicPack\SolderFramework\Tests\Feature\Build;
 
 use TechnicPack\SolderFramework\Build;
+use TechnicPack\SolderFramework\Dependency;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Http\Middleware\Authenticate;
@@ -52,5 +53,17 @@ class DestroyBuildTest extends TestCase
         $response = $this->deleteJson('/api/modpacks/99/builds/99');
 
         $response->assertStatus(404);
+    }
+
+    /** @test **/
+    public function destroying_a_build_removes_related_dependencies()
+    {
+        $build = factory(Build::class)->create();
+        $build->dependencies()->save(factory(Dependency::class)->make(['build_id' => $build->id]));
+
+        $response = $this->deleteJson("/api/modpacks/{$build->modpack_id}/builds/{$build->id}");
+
+        $response->assertStatus(204);
+        $this->assertCount(0, Dependency::all());
     }
 }

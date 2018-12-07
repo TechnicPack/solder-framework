@@ -12,6 +12,7 @@
 namespace TechnicPack\SolderFramework\Tests\Feature\Mod;
 
 use TechnicPack\SolderFramework\Mod;
+use TechnicPack\SolderFramework\Build;
 use TechnicPack\SolderFramework\Version;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -72,5 +73,22 @@ class ListModsTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonStructure([['versions']]);
+    }
+
+    /** @test **/
+    public function mod_list_can_be_filtered_to_exclude_items_a_build_already_depends_on()
+    {
+        $version = factory(Version::class)->create();
+        $modA = factory(Mod::class)->create();
+        $modB = $version->mod;
+        $build = factory(Build::class)->create();
+        $build->dependencies()->create(['version_id' => $version->id]);
+
+        $response = $this->getJson("/api/mods?filter[not_in_build]={$build->id}");
+
+        $response->assertStatus(200);
+        $response->assertJsonCount(1);
+        $response->assertJsonFragment(['id' => $modA->id]);
+        $response->assertJsonMissing(['id' => $modB->id]);
     }
 }

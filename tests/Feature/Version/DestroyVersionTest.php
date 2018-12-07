@@ -12,6 +12,7 @@
 namespace TechnicPack\SolderFramework\Tests\Feature\Version;
 
 use TechnicPack\SolderFramework\Version;
+use TechnicPack\SolderFramework\Dependency;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Http\Middleware\Authenticate;
@@ -52,5 +53,17 @@ class DestroyVersionTest extends TestCase
         $response = $this->deleteJson('/api/mods/99/versions/99');
 
         $response->assertStatus(404);
+    }
+
+    /** @test **/
+    public function destroying_a_version_removes_related_dependencies()
+    {
+        $version = factory(Version::class)->create();
+        $version->dependencies()->save(factory(Dependency::class)->make(['build_id' => $version->id]));
+
+        $response = $this->deleteJson("/api/mods/{$version->mod_id}/versions/{$version->id}");
+
+        $response->assertStatus(204);
+        $this->assertCount(0, Dependency::all());
     }
 }

@@ -44,7 +44,8 @@
                 <div class="tab-content">
                     <!-- Dependencies -->
                     <div role="tabcard" class="tab-pane active" id="dependencies">
-                        Dependencies
+                        <build-create-dependency :build="build"></build-create-dependency>
+                        <build-current-dependencies :dependencies="build.dependencies"></build-current-dependencies>
                     </div>
 
                     <!-- Settings -->
@@ -93,6 +94,8 @@
 <script>
     import Modpack from '../models/Modpack';
     import Build from '../models/Build';
+    import BuildCreateDependency from '../components/builds/BuildCreateDependency';
+    import BuildCurrentDependencies from '../components/builds/BuildCurrentDependencies';
     import BuildSettings from '../components/builds/BuildSettings';
 
     export default {
@@ -100,6 +103,8 @@
 
 
         components: {
+            BuildCreateDependency,
+            BuildCurrentDependencies,
             BuildSettings,
         },
 
@@ -110,7 +115,9 @@
         data() {
             return {
                 modpack: new Modpack({}),
-                build: new Build({}),
+                build: new Build({
+                    dependencies: []
+                }),
             }
         },
 
@@ -152,7 +159,9 @@
              */
             async getBuild() {
                 this.modpack = await Modpack.find(this.modpackId);
-                this.build = await this.modpack.builds().find(this.buildId);
+                this.build = await this.modpack.builds()
+                    .include('dependencies.mod', 'dependencies.version')
+                    .find(this.buildId);
             },
 
             /**

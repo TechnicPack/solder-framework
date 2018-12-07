@@ -60,6 +60,18 @@ class Version extends Model
     ];
 
     /**
+     * The "booting" method of the model.
+     */
+    protected static function boot()
+    {
+        self::deleting(function (self $version) {
+            $version->dependencies->each->delete();
+        });
+
+        parent::boot();
+    }
+
+    /**
      * Parent mod.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -67,6 +79,16 @@ class Version extends Model
     public function mod()
     {
         return $this->belongsTo(config('solder.model.mod'));
+    }
+
+    /**
+     * Related dependencies.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function dependencies()
+    {
+        return $this->hasMany(config('solder.model.dependency'));
     }
 
     /**

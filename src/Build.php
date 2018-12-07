@@ -38,6 +38,18 @@ class Build extends Model
     ];
 
     /**
+     * The "booting" method of the model.
+     */
+    protected static function boot()
+    {
+        self::deleting(function (self $build) {
+            $build->dependencies->each->delete();
+        });
+
+        parent::boot();
+    }
+
+    /**
      * Parent modpack.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -45,6 +57,16 @@ class Build extends Model
     public function modpack()
     {
         return $this->belongsTo(config('solder.model.modpack'));
+    }
+
+    /**
+     * Related dependencies.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function dependencies()
+    {
+        return $this->hasMany(config('solder.model.dependency'));
     }
 
     /**

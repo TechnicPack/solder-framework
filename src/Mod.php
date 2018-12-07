@@ -11,7 +11,9 @@
 
 namespace TechnicPack\SolderFramework;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * @property string name
@@ -40,5 +42,23 @@ class Mod extends Model
     public function versions()
     {
         return $this->hasMany(config('solder.model.version'));
+    }
+
+    /**
+     * Limit mod list to items not already part of a build.
+     *
+     * @param Builder $query
+     * @param $buildId
+     */
+    public function scopeNotInBuild(Builder $query, $buildId)
+    {
+        $query
+            ->whereNotExists(function ($query) use ($buildId) {
+                $query->select(DB::raw(1))
+                    ->from('dependencies')
+                    ->join('versions', 'versions.id', 'dependencies.version_id')
+                    ->whereRaw("dependencies.build_id = {$buildId}")
+                    ->whereRaw('versions.mod_id = mods.id');
+            });
     }
 }

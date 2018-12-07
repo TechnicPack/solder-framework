@@ -7,7 +7,8 @@
     "require": {
         "php": "^7.1",
         "emgag/flysystem-hash": "^1.0",
-        "spatie/laravel-query-builder": "^1.11"
+        "spatie/laravel-query-builder": "^1.11",
+        "znck/belongs-to-through": "^2.3"
     },
     "require-dev": {
         "larapack/dd": "^1.0",

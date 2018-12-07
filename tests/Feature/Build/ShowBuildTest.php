@@ -12,6 +12,8 @@
 namespace TechnicPack\SolderFramework\Tests\Feature\Build;
 
 use TechnicPack\SolderFramework\Build;
+use TechnicPack\SolderFramework\Version;
+use TechnicPack\SolderFramework\Dependency;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Http\Middleware\Authenticate;
@@ -64,5 +66,35 @@ class ShowBuildTest extends TestCase
         $response = $this->getJson('/api/modpacks/99/builds/99');
 
         $response->assertStatus(404);
+    }
+
+    /** @test **/
+    public function the_child_dependency_data_can_be_included()
+    {
+        $build = factory(Build::class)->create();
+        $version = factory(Version::class)->create();
+        $dependency = Dependency::create([
+            'build_id'   => $build->id,
+            'version_id' => $version->id,
+        ]);
+
+        $response = $this->getJson("/api/modpacks/{$build->modpack_id}/builds/{$build->id}?include=dependencies.version,dependencies.mod");
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['dependencies' => [['mod', 'version']]]);
+        $response->assertJsonCount(1, 'dependencies');
+        $response->assertJsonFragment([
+            'id'         => $dependency->id,
+            'created_at' => $dependency->created_at->format('Y-m-d H:i:s'),
+            'updated_at' => $dependency->updated_at->format('Y-m-d H:i:s'),
+        ]);
+        $response->assertJsonFragment([
+            'id'  => $version->id,
+            'tag' => $version->tag,
+        ]);
+        $response->assertJsonFragment([
+            'id'    => $version->mod->id,
+            'modid' => $version->mod->modid,
+        ]);
     }
 }

@@ -14,6 +14,7 @@ namespace TechnicPack\SolderFramework\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Spatie\QueryBuilder\QueryBuilder;
+use TechnicPack\SolderFramework\Build;
 use TechnicPack\SolderFramework\Rules\UrlSafe;
 use Illuminate\Routing\Controller as BaseController;
 
@@ -94,7 +95,14 @@ class ModpackBuildController extends BaseController
     public function show(Request $request)
     {
         $build = QueryBuilder::for($this->build)
+            ->allowedIncludes([
+                'dependencies.mod',
+                'dependencies.version',
+            ])
             ->findOrFail($request->build);
+
+        // FIXME: This is a hack work-around for a compatibility issue
+        $this->reloadRelations($request, $build);
 
         return response()->json($build);
     }
@@ -140,5 +148,24 @@ class ModpackBuildController extends BaseController
         $build->delete();
 
         return response()->json([], 204);
+    }
+
+    /**
+     * Reload the relationships.
+     *
+     * QueryBuilder doesn't play with BelongsToThrough, so if that relation
+     * was requested we need to reload all relations again to actually match
+     * results and hydrate the model properly.
+     *
+     * See https://github.com/spatie/laravel-query-builder/issues/135
+     *
+     * @param Request $request
+     * @param $build
+     */
+    private function reloadRelations(Request $request, Build $build)
+    {
+        if (false !== mb_strpos($request->query('include'), 'dependencies.mod')) {
+            $build->load(explode(',', $request->query('include')));
+        }
     }
 }
