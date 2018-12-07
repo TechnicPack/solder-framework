@@ -45,13 +45,32 @@ class ModpackBuildController extends BaseController
             ->firstOrFail()
             ->builds()
             ->where('tag', $request->build)
+            ->with('dependencies.mod', 'dependencies.version')
             ->firstOrFail();
 
         return response()->json([
             'minecraft' => $build->minecraft_version,
             'java'      => $build->java_version,
             'memory'    => $build->java_memory,
-            'mods'      => [],
+            'mods'      => $build->dependencies->map(function ($dependency) use ($request) {
+                $response = [
+                    'name'    => $dependency->mod->modid,
+                    'version' => $dependency->version->tag,
+                    'md5'     => $dependency->version->package_hash,
+                    'url'     => $dependency->version->package_url,
+                ];
+
+                if ('mods' === $request->query('include')) {
+                    $response = array_merge([
+                        'pretty_name' => $dependency->mod->name,
+                        'author'      => $dependency->mod->author,
+                        'description' => $dependency->mod->description,
+                        'link'        => $dependency->mod->url,
+                    ], $response);
+                }
+
+                return $response;
+            }),
         ]);
     }
 }
