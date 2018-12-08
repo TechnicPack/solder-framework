@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace TechnicPack\SolderFramework\Tests\Feature\Launcher;
+namespace TechnicPack\SolderFramework\Tests\Feature\Legacy;
 
 use TechnicPack\SolderFramework\Solder;
 use TechnicPack\SolderFramework\Tests\TestCase;
