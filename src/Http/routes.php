@@ -9,11 +9,13 @@
  * file that was distributed with this source code.
  */
 
-// Public API ...
+// API Root ...
 Route::get('/', 'ServiceController@show');
-Route::get('/modpack', 'Launcher\\ModpackController@index');
-Route::get('/modpack/{modpack}', 'Launcher\\ModpackController@show');
-Route::get('/modpack/{modpack}/{build}', 'Launcher\\ModpackBuildController@show');
+
+// Legacy API ...
+Route::get('/modpack', '\\TechnicPack\\SolderFramework\\Http\\Legacy\\ModpackController@index');
+Route::get('/modpack/{modpack}', '\\TechnicPack\\SolderFramework\\Http\\Legacy\\ModpackController@show');
+Route::get('/modpack/{modpack}/{build}', '\\TechnicPack\\SolderFramework\\Http\\Legacy\\ModpackBuildController@show');
 
 // Modpack Routes ...
 Route::match(['post', 'put', 'patch'], '/modpacks/{modpack}/icon', 'ModpackIconController@store')->name('modpacks.icon.store');
