@@ -10,9 +10,10 @@
  */
 
 // API Root ...
-Route::get('/', 'ServiceController@show');
+Route::get('/', 'ServiceController@show')->name('root');
 
 // Legacy API ...
+Route::get('/verify/{token}', '\\TechnicPack\\SolderFramework\\Http\\Legacy\\KeyController@show');
 Route::get('/modpack', '\\TechnicPack\\SolderFramework\\Http\\Legacy\\ModpackController@index');
 Route::get('/modpack/{modpack}', '\\TechnicPack\\SolderFramework\\Http\\Legacy\\ModpackController@show');
 Route::get('/modpack/{modpack}/{build}', '\\TechnicPack\\SolderFramework\\Http\\Legacy\\ModpackBuildController@show');
@@ -37,3 +38,6 @@ Route::delete('/mods/{mod}/versions/{version}/package', 'PackageController@destr
 
 // Dependency Routes ..
 Route::apiResource('dependencies', 'DependencyController')->only(['store', 'destroy']);
+
+// Key Routes ..
+Route::apiResource('keys', 'KeyController');
