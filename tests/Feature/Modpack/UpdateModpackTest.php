@@ -41,13 +41,7 @@ class UpdateModpackTest extends TestCase
             $this->assertSame('Revised Modpack', $modpack->name);
             $this->assertSame('revised-modpack', $modpack->slug);
             $this->assertSame('http://example.com/revised', $modpack->url);
-
-            $response->assertJsonFragment([
-                'id'   => $modpack->id,
-                'name' => 'Revised Modpack',
-                'slug' => 'revised-modpack',
-                'url'  => 'http://example.com/revised',
-            ]);
+            $response->assertExactJson($modpack->jsonSerialize());
         });
     }
 

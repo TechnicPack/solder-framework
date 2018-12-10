@@ -35,13 +35,7 @@ class StoreModpackTest extends TestCase
             $this->assertSame('Test Modpack', $modpack->name);
             $this->assertSame('test-modpack', $modpack->slug);
             $this->assertSame('http://example.com/example-mod', $modpack->url);
-
-            $response->assertJsonFragment([
-                'id'   => $modpack->id,
-                'name' => 'Test Modpack',
-                'slug' => 'test-modpack',
-                'url'  => 'http://example.com/example-mod',
-            ]);
+            $response->assertExactJson($modpack->toArray());
         });
     }
 

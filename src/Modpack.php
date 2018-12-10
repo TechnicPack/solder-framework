@@ -11,17 +11,20 @@
 
 namespace TechnicPack\SolderFramework;
 
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
 /**
+ * @property int id
  * @property string name
  * @property string slug
  * @property string icon_path
  * @property string icon
- * @property Collection builds
+ * @property string url
  * @property \TechnicPack\SolderFramework\Enums\Status status
+ * @property \Illuminate\Database\Eloquent\Collection builds
+ * @property \Carbon\Carbon updated_at
+ * @property \Carbon\Carbon created_at
  */
 class Modpack extends Model
 {
