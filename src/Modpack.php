@@ -21,9 +21,19 @@ use Illuminate\Support\Facades\Storage;
  * @property string icon_path
  * @property string icon
  * @property Collection builds
+ * @property \TechnicPack\SolderFramework\Enums\Status status
  */
 class Modpack extends Model
 {
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'status' => 'int',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -44,6 +54,7 @@ class Modpack extends Model
         'icon_path',
         'latest_id',
         'recommended_id',
+        'status',
     ];
 
     /**

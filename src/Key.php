@@ -32,4 +32,16 @@ class Key extends Model
      */
     protected $hidden = [
     ];
+
+    /**
+     * Check if the given token is valid.
+     *
+     * @param $token
+     *
+     * @return mixed
+     */
+    public static function isValid($token)
+    {
+        return self::where('token', $token)->exists();
+    }
 }
