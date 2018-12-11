@@ -46,5 +46,6 @@ export default class Solder {
         _vue.component('solder-nav-modpacks', require('./components/nav/NavModpacks'));
         _vue.component('solder-nav-mods', require('./components/nav/NavMods'));
         _vue.component('solder-keys', require('./components/Keys'));
+        _vue.component('solder-clients', require('./components/Clients'));
     }
 }

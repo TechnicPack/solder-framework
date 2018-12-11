@@ -41,3 +41,6 @@ Route::apiResource('dependencies', 'DependencyController')->only(['store', 'dest
 
 // Platform Key Routes ..
 Route::apiResource('platform-keys', 'PlatformKeyController');
+
+// Launcher Client Routes ..
+Route::apiResource('launcher-clients', 'LauncherClientController');
