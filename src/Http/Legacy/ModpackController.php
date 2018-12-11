@@ -40,7 +40,7 @@ class ModpackController extends BaseController
         Resource::withoutWrapping();
         $this->middleware('api');
         $this->modpack = config('solder.model.modpack');
-        $this->key = config('solder.model.key');
+        $this->key = config('solder.model.platformKey');
     }
 
     /**

@@ -14,14 +14,14 @@ namespace TechnicPack\SolderFramework\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 
-class KeyController extends BaseController
+class PlatformKeyController extends BaseController
 {
     /**
      * The key model.
      *
-     * @var \TechnicPack\SolderFramework\Key
+     * @var \TechnicPack\SolderFramework\PlatformKey
      */
-    protected $key;
+    protected $platformKey;
 
     /**
      * KeyController constructor.
@@ -30,7 +30,7 @@ class KeyController extends BaseController
     {
         $this->middleware('api');
         $this->middleware('auth:api');
-        $this->key = config('solder.model.key');
+        $this->platformKey = config('solder.model.platformKey');
     }
 
     /**
@@ -40,7 +40,7 @@ class KeyController extends BaseController
      */
     public function index()
     {
-        $keys = $this->key::all();
+        $keys = $this->platformKey::all();
 
         return response()->json($keys);
     }
@@ -59,7 +59,7 @@ class KeyController extends BaseController
             'token' => ['required'],
         ]);
 
-        $key = $this->key::create($attributes);
+        $key = $this->platformKey::create($attributes);
 
         return response()->json($key, 201);
     }
@@ -73,7 +73,7 @@ class KeyController extends BaseController
      */
     public function show(Request $request)
     {
-        $key = $this->key::findOrFail($request->route('key'));
+        $key = $this->platformKey::findOrFail($request->route('platform_key'));
 
         return response()->json($key);
     }
@@ -87,7 +87,7 @@ class KeyController extends BaseController
      */
     public function update(Request $request)
     {
-        $key = $this->key::findOrFail($request->route('key'));
+        $key = $this->platformKey::findOrFail($request->route('platform_key'));
 
         $attributes = $request->validate([
             'name'  => ['required'],
@@ -108,7 +108,7 @@ class KeyController extends BaseController
      */
     public function destroy(Request $request)
     {
-        $key = $this->key::findOrFail($request->route('key'));
+        $key = $this->platformKey::findOrFail($request->route('platform_key'));
         $key->delete();
 
         return response()->json([], 204);

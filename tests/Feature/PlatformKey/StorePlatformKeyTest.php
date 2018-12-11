@@ -9,28 +9,28 @@
  * file that was distributed with this source code.
  */
 
-namespace TechnicPack\SolderFramework\Tests\Feature\Key;
+namespace TechnicPack\SolderFramework\Tests\Feature\PlatformKey;
 
-use TechnicPack\SolderFramework\Key;
+use TechnicPack\SolderFramework\PlatformKey;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Http\Middleware\Authenticate;
 
-class StoreKeyTest extends TestCase
+class StorePlatformKeyTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test **/
     public function it_stores_a_key()
     {
-        $response = $this->postJson('/api/keys', [
+        $response = $this->postJson('/api/platform-keys', [
             'name'        => 'Test Key',
             'token'       => 'test-key',
         ]);
 
         $response->assertStatus(201);
-        $this->assertCount(1, Key::all());
-        $response->assertJsonFragment(Key::first()->toArray());
+        $this->assertCount(1, PlatformKey::all());
+        $response->assertJsonFragment(PlatformKey::first()->toArray());
     }
 
     /** @test **/
@@ -40,34 +40,34 @@ class StoreKeyTest extends TestCase
             Authenticate::class,
         ]);
 
-        $response = $this->postJson('/api/keys', $this->validParams());
+        $response = $this->postJson('/api/platform-keys', $this->validParams());
 
         $response->assertStatus(401);
-        $this->assertCount(0, Key::all());
+        $this->assertCount(0, PlatformKey::all());
     }
 
     /** @test */
     public function name_is_required()
     {
-        $response = $this->postJson('/api/keys', $this->validParams([
+        $response = $this->postJson('/api/platform-keys', $this->validParams([
             'name' => '',
         ]));
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('name');
-        $this->assertSame(0, Key::count());
+        $this->assertSame(0, PlatformKey::count());
     }
 
     /** @test */
     public function token_is_required()
     {
-        $response = $this->postJson('/api/keys', $this->validParams([
+        $response = $this->postJson('/api/platform-keys', $this->validParams([
             'token' => '',
         ]));
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('token');
-        $this->assertSame(0, Key::count());
+        $this->assertSame(0, PlatformKey::count());
     }
 
     /**

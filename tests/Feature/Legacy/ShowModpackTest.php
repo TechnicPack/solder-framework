@@ -11,8 +11,8 @@
 
 namespace TechnicPack\SolderFramework\Tests\Feature\Legacy;
 
-use TechnicPack\SolderFramework\Key;
 use TechnicPack\SolderFramework\Modpack;
+use TechnicPack\SolderFramework\PlatformKey;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use TechnicPack\SolderFramework\Http\Legacy\ModpackResource;
@@ -55,7 +55,7 @@ class ShowModpackTest extends TestCase
     /** @test **/
     public function show_private_modpack_with_valid_key()
     {
-        factory(Key::class)->create(['token' => 'valid-token']);
+        factory(PlatformKey::class)->create(['token' => 'valid-token']);
         $modpack = factory(Modpack::class)->state('private')->create(['slug' => 'example-a']);
 
         $response = $this->getJson('/api/modpack/example-a?k=valid-token');

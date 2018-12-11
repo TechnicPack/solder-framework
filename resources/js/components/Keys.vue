@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="card card-default">
-            <div class="card-header">Add Key</div>
+            <div class="card-header">Add Platform Key</div>
 
             <div class="card-body">
                 <form role="form">
@@ -88,7 +88,7 @@
 </template>
 
 <script>
-    import Key from "../models/Key";
+    import PlatformKey from "../models/PlatformKey";
 
     export default {
         /**
@@ -97,7 +97,7 @@
         data() {
             return {
                 keys: [],
-                key: new Key({}),
+                key: new PlatformKey({}),
                 successful: false,
             }
         },
@@ -114,7 +114,7 @@
              * Get the keys.
              */
             async getKeys() {
-                this.keys = await Key.get();
+                this.keys = await PlatformKey.get();
             },
 
             /**
@@ -130,7 +130,7 @@
                         () => {
                             Bus.$emit('updateMod');
                             this.key.finishProcessing();
-                            this.key = new Key({});
+                            this.key = new PlatformKey({});
                             this.successful = true;
                             this.getKeys();
                         },

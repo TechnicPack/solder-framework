@@ -39,5 +39,5 @@ Route::delete('/mods/{mod}/versions/{version}/package', 'PackageController@destr
 // Dependency Routes ..
 Route::apiResource('dependencies', 'DependencyController')->only(['store', 'destroy']);
 
-// Key Routes ..
-Route::apiResource('keys', 'KeyController');
+// Platform Key Routes ..
+Route::apiResource('platform-keys', 'PlatformKeyController');

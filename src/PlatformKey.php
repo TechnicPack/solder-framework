@@ -13,7 +13,7 @@ namespace TechnicPack\SolderFramework;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Key extends Model
+class PlatformKey extends Model
 {
     /**
      * The attributes that are mass assignable.
