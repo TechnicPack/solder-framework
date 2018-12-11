@@ -11,7 +11,6 @@
 
 use Faker\Generator as Faker;
 use TechnicPack\SolderFramework\Modpack;
-use TechnicPack\SolderFramework\Enums\Status;
 
 $factory->define(\TechnicPack\SolderFramework\Modpack::class, function (Faker $faker) {
     return [
@@ -31,18 +30,18 @@ $factory->state(\TechnicPack\SolderFramework\Modpack::class, 'with-icon', functi
 
 $factory->state(Modpack::class, 'public', function (Faker $faker) {
     return [
-        'status' => Status::public,
+        'visibility' => 'public',
     ];
 });
 
 $factory->state(Modpack::class, 'private', function (Faker $faker) {
     return [
-        'status' => Status::private,
+        'visibility' => 'private',
     ];
 });
 
-$factory->state(Modpack::class, 'unlisted', function (Faker $faker) {
+$factory->state(Modpack::class, 'hidden', function (Faker $faker) {
     return [
-        'status' => Status::unlisted,
+        'visibility' => 'hidden',
     ];
 });

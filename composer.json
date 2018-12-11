@@ -6,7 +6,6 @@
     "license": "MIT",
     "require": {
         "php": "^7.1",
-        "bensampo/laravel-enum": "^1.16",
         "emgag/flysystem-hash": "^1.0",
         "spatie/laravel-query-builder": "^1.11",
         "znck/belongs-to-through": "^2.3"

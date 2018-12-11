@@ -12,7 +12,6 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use TechnicPack\SolderFramework\Enums\Status;
 
 class CreateModpacksTable extends Migration
 {
@@ -27,7 +26,7 @@ class CreateModpacksTable extends Migration
             $table->string('slug');
             $table->string('icon_path')->nullable();
             $table->string('url')->nullable();
-            $table->unsignedTinyInteger('status')->default(Status::private);
+            $table->string('visibility')->default('private');
             $table->unsignedInteger('latest_id')->nullable();
             $table->unsignedInteger('recommended_id')->nullable();
             $table->timestamps();

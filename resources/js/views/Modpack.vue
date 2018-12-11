@@ -6,6 +6,7 @@
             </div>
             <div class="col d-md-flex justify-content-md-end text-uppercase">
                 <div class="ml-md-4">{{ modpack.name }}</div>
+                <div class="ml-md-4">{{ modpack.visibility }}</div>
                 <div class="ml-md-4"><strong>{{ modpack.builds.length }}</strong> Builds</div>
             </div>
         </div>
@@ -20,6 +21,15 @@
                                     <path d="M0 10V2l2-2h8l10 10-10 10L0 10zm4.5-4a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
                                 </svg>
                                 Builds
+                            </a>
+                        </li>
+
+                        <li class="nav-item ">
+                            <a class="nav-link" href="#visibility" aria-controls="visibility" role="tab" data-toggle="tab">
+                                <svg class="icon-20 " viewBox="0 0 20 20     " xmlns="http://www.w3.org/2000/svg ">
+                                    <path d="M.2 10a11 11 0 0 1 19.6 0A11 11 0 0 1 .2 10zm9.8 4a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0-2a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>
+                                </svg>
+                                Visibility
                             </a>
                         </li>
 
@@ -42,6 +52,11 @@
                     <div role="tabcard" class="tab-pane active" id="builds">
                         <modpack-create-build :modpack="modpack"></modpack-create-build>
                         <modpack-current-builds :modpack="modpack" :builds="modpack.builds"></modpack-current-builds>
+                    </div>
+
+                    <!-- Visibility -->
+                    <div role="tabcard" class="tab-pane" id="visibility">
+                        <modpack-visibility :modpack="modpack"></modpack-visibility>
                     </div>
 
                     <!-- Settings -->
@@ -91,6 +106,7 @@
     import Modpack from '../models/Modpack'
     import ModpackCreateBuild from '../components/modpacks/ModpackCreateBuild'
     import ModpackCurrentBuilds from '../components/modpacks/ModpackCurrentBuilds'
+    import ModpackVisibility from '../components/modpacks/ModpackVisibility'
     import ModpackIcon from '../components/modpacks/ModpackIcon'
     import ModpackSettings from '../components/modpacks/ModpackSettings'
 
@@ -100,6 +116,7 @@
         components: {
             ModpackCreateBuild,
             ModpackCurrentBuilds,
+            ModpackVisibility,
             ModpackIcon,
             ModpackSettings,
         },

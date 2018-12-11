@@ -33,20 +33,22 @@ class ModpackTest extends TestCase
     public function it_is_serialized_to_json()
     {
         $modpack = factory(Modpack::class)->create([
-            'name'      => 'Example Modpack',
-            'slug'      => 'example-modpack',
-            'url'       => 'http://example.com/example-mod',
-            'icon_path' => 'icon.png',
+            'name'          => 'Example Modpack',
+            'slug'          => 'example-modpack',
+            'url'           => 'http://example.com/example-mod',
+            'icon_path'     => 'icon.png',
+            'visibility'    => 'public',
         ]);
 
         $this->assertArraySubset([
-            'id'         => $modpack->id,
-            'name'       => 'Example Modpack',
-            'slug'       => 'example-modpack',
-            'url'        => 'http://example.com/example-mod',
-            'icon'       => $this->filesystem->url('icon.png'),
-            'updated_at' => $modpack->updated_at->toDateTimeString(),
-            'created_at' => $modpack->created_at->toDateTimeString(),
+            'id'             => $modpack->id,
+            'name'           => 'Example Modpack',
+            'slug'           => 'example-modpack',
+            'url'            => 'http://example.com/example-mod',
+            'icon'           => $this->filesystem->url('icon.png'),
+            'visibility'     => 'public',
+            'updated_at'     => $modpack->updated_at->toDateTimeString(),
+            'created_at'     => $modpack->created_at->toDateTimeString(),
         ], $modpack->jsonSerialize());
     }
 }

@@ -13,7 +13,6 @@ namespace TechnicPack\SolderFramework\Http\Legacy;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\Resource;
-use TechnicPack\SolderFramework\Enums\Status;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -56,7 +55,7 @@ class ModpackController extends BaseController
         $modpacks = $this->modpack::with('builds')->get();
 
         $modpacks = $modpacks->filter(function ($modpack) use ($request) {
-            return $this->authorizeList($modpack, $request);
+            return $this->authorize($modpack, $request);
         });
 
         return new ModpacksCollection($modpacks);
@@ -75,32 +74,11 @@ class ModpackController extends BaseController
             ->with('builds')
             ->firstOrFail();
 
-        if (! $this->authorizeShow($modpack, $request)) {
+        if (! $this->authorize($modpack, $request)) {
             throw new ModelNotFoundException();
         }
 
         return new ModpackResource($modpack);
-    }
-
-    /**
-     * Check if the request is authorized to list the modpack.
-     *
-     * @param $modpack
-     * @param Request $request
-     *
-     * @return bool
-     */
-    private function authorizeList($modpack, Request $request)
-    {
-        if (Status::public === $modpack->status) {
-            return true;
-        }
-
-        if ($this->key::isValid($request->get('k'))) {
-            return true;
-        }
-
-        return false;
     }
 
     /**
@@ -111,13 +89,17 @@ class ModpackController extends BaseController
      *
      * @return bool
      */
-    private function authorizeShow($modpack, Request $request)
+    private function authorize($modpack, Request $request)
     {
-        if (Status::public === $modpack->status || Status::unlisted === $modpack->status) {
-            return true;
+        $modpackIsHidden = 'hidden' === $modpack->visibility;
+        $modpackIsPublic = 'public' === $modpack->visibility;
+        $requestHasValidApiKey = $this->key::isValid($request->get('k'));
+
+        if ($modpackIsHidden) {
+            return false;
         }
 
-        if ($this->key::isValid($request->get('k'))) {
+        if ($modpackIsPublic || $requestHasValidApiKey) {
             return true;
         }
 

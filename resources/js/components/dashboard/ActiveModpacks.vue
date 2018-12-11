@@ -17,6 +17,7 @@
                 <thead>
                 <th>&nbsp;</th>
                 <th>Name</th>
+                <th>Visibility</th>
                 <th>Builds</th>
                 <th>&nbsp;</th>
                 </thead>
@@ -32,6 +33,9 @@
                         >
                             {{ modpack.name }}
                         </router-link>
+                    </td>
+                    <td>
+                        {{ modpack.visibility }}
                     </td>
                     <td>
                         {{ modpack.builds.length }}

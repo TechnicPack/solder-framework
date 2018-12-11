@@ -47,11 +47,15 @@
          */
         data() {
             return {
-                modpack: new Modpack({
-                    name: '',
-                    slug: '',
-                }),
+                modpack: {},
             }
+        },
+
+        /**
+         * The component has been created by Vue.
+         */
+        created() {
+            this.resetForm();
         },
 
         watch: {
@@ -67,6 +71,18 @@
 
         methods: {
             /**
+             * Reset the modpack to defaults
+             */
+            resetForm() {
+                this.modpack = new Modpack({
+                    name: '',
+                    slug: '',
+                    url: '',
+                    visibility: 'hidden',
+                });
+            },
+
+            /**
              * Create the new build.
              */
             create(e) {
@@ -79,7 +95,7 @@
                         () => {
                             Bus.$emit('updateModpack');
                             this.modpack.finishProcessing();
-                            this.modpack = new Modpack({});
+                            this.resetForm();
                         },
                         (error) => {
                             this.modpack

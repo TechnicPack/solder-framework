@@ -60,14 +60,15 @@ class ModpackController extends BaseController
     public function store(Request $request)
     {
         $attributes = $request->validate([
-            'name' => ['required'],
-            'slug' => ['required', new UrlSafe(), new Unique($this->modpack)],
-            'url'  => ['nullable', 'url'],
+            'name'       => ['required'],
+            'slug'       => ['required', new UrlSafe(), new Unique($this->modpack)],
+            'visibility' => ['required', 'in:hidden,private,public'],
+            'url'        => ['nullable', 'url'],
         ]);
 
         $modpack = $this->modpack::create($attributes);
 
-        return response()->json($modpack, 201);
+        return response()->json($modpack->fresh(), 201);
     }
 
     /**
@@ -98,9 +99,10 @@ class ModpackController extends BaseController
         $modpack = $this->modpack::findOrFail($request->modpack);
 
         $attributes = $request->validate([
-            'name' => ['required'],
-            'slug' => ['required', new Unique($this->modpack, $modpack->id)],
-            'url'  => ['nullable', 'url'],
+            'name'       => ['required'],
+            'slug'       => ['required', new Unique($this->modpack, $modpack->id)],
+            'visibility' => ['required', 'in:hidden,private,public'],
+            'url'        => ['nullable', 'url'],
         ]);
 
         $modpack->update($attributes);

@@ -33,14 +33,13 @@ class ShowModpackTest extends TestCase
     }
 
     /** @test **/
-    public function show_an_unlisted_modpack()
+    public function suppress_a_hidden_modpack()
     {
-        $modpack = factory(Modpack::class)->state('unlisted')->create(['slug' => 'example-a']);
+        factory(Modpack::class)->state('hidden')->create(['slug' => 'example-a']);
 
         $response = $this->getJson('/api/modpack/example-a');
 
-        $response->assertStatus(200);
-        $response->assertExactJson((new ModpackResource($modpack))->jsonSerialize());
+        $response->assertStatus(404);
     }
 
     /** @test **/

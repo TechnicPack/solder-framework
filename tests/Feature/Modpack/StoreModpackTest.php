@@ -24,9 +24,10 @@ class StoreModpackTest extends TestCase
     public function a_modpack_can_be_stored()
     {
         $response = $this->postJson('/api/modpacks', [
-            'name' => 'Test Modpack',
-            'slug' => 'test-modpack',
-            'url'  => 'http://example.com/example-mod',
+            'name'       => 'Test Modpack',
+            'slug'       => 'test-modpack',
+            'url'        => 'http://example.com/example-mod',
+            'visibility' => 'private',
         ]);
 
         $response->assertStatus(201);
@@ -35,6 +36,7 @@ class StoreModpackTest extends TestCase
             $this->assertSame('Test Modpack', $modpack->name);
             $this->assertSame('test-modpack', $modpack->slug);
             $this->assertSame('http://example.com/example-mod', $modpack->url);
+            $this->assertSame('private', $modpack->visibility);
             $response->assertExactJson($modpack->toArray());
         });
     }
@@ -121,6 +123,28 @@ class StoreModpackTest extends TestCase
         $this->assertSame(0, Modpack::count());
     }
 
+    /** @test **/
+    public function the_visibility_field_is_required()
+    {
+        $response = $this->postJson('/api/modpacks', $this->validParams([
+            'visibility' => '',
+        ]));
+
+        $response->assertJsonValidationErrors('visibility');
+        $this->assertSame(0, Modpack::count());
+    }
+
+    /** @test **/
+    public function the_visibility_field_must_be_in_list()
+    {
+        $response = $this->postJson('/api/modpacks', $this->validParams([
+            'visibility' => 'transcended',
+        ]));
+
+        $response->assertJsonValidationErrors('visibility');
+        $this->assertSame(0, Modpack::count());
+    }
+
     /**
      * @param array $overrides
      *
@@ -129,9 +153,10 @@ class StoreModpackTest extends TestCase
     private function validParams($overrides = [])
     {
         return array_merge([
-            'name' => 'Test Modpack',
-            'slug' => 'test-modpack',
-            'url'  => 'http://example.com/example-mod',
+            'name'       => 'Test Modpack',
+            'slug'       => 'test-modpack',
+            'url'        => 'http://example.com/example-mod',
+            'visibility' => 'public',
         ], $overrides);
     }
 }

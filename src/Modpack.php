@@ -21,22 +21,13 @@ use Illuminate\Support\Facades\Storage;
  * @property string icon_path
  * @property string icon
  * @property string url
- * @property \TechnicPack\SolderFramework\Enums\Status status
+ * @property string visibility
  * @property \Illuminate\Database\Eloquent\Collection builds
  * @property \Carbon\Carbon updated_at
  * @property \Carbon\Carbon created_at
  */
 class Modpack extends Model
 {
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'status' => 'int',
-    ];
-
     /**
      * The attributes that are mass assignable.
      *
@@ -46,6 +37,7 @@ class Modpack extends Model
         'name',
         'slug',
         'url',
+        'visibility',
     ];
 
     /**
@@ -57,7 +49,6 @@ class Modpack extends Model
         'icon_path',
         'latest_id',
         'recommended_id',
-        'status',
     ];
 
     /**

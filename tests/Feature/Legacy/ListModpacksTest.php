@@ -68,9 +68,9 @@ class ListModpacksTest extends TestCase
     }
 
     /** @test **/
-    public function hide_unlisted_modpacks()
+    public function hide_hidden_modpacks()
     {
-        factory(Modpack::class)->state('unlisted')->create();
+        factory(Modpack::class)->state('hidden')->create();
 
         $response = $this->getJson('/api/modpack');
 
@@ -82,18 +82,6 @@ class ListModpacksTest extends TestCase
     public function list_private_modpacks_with_valid_key()
     {
         factory(Modpack::class)->state('private')->create();
-        factory(Key::class)->create(['token' => 'valid-key']);
-
-        $response = $this->getJson('/api/modpack?k=valid-key');
-
-        $response->assertStatus(200);
-        $response->assertJsonCount(1, 'modpacks');
-    }
-
-    /** @test **/
-    public function list_unlisted_modpacks_with_valid_key()
-    {
-        factory(Modpack::class)->state('unlisted')->create();
         factory(Key::class)->create(['token' => 'valid-key']);
 
         $response = $this->getJson('/api/modpack?k=valid-key');

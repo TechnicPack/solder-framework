@@ -24,15 +24,17 @@ class UpdateModpackTest extends TestCase
     public function a_modpack_can_be_updated()
     {
         $modpack = factory(Modpack::class)->create([
-            'name' => 'Existing Modpack',
-            'slug' => 'existing-modpack',
-            'url'  => 'http://example.com/original',
+            'name'       => 'Existing Modpack',
+            'slug'       => 'existing-modpack',
+            'url'        => 'http://example.com/original',
+            'visibility' => 'private',
         ]);
 
         $response = $this->putJson("/api/modpacks/{$modpack->id}", [
-            'name' => 'Revised Modpack',
-            'slug' => 'revised-modpack',
-            'url'  => 'http://example.com/revised',
+            'name'       => 'Revised Modpack',
+            'slug'       => 'revised-modpack',
+            'url'        => 'http://example.com/revised',
+            'visibility' => 'public',
         ]);
 
         $response->assertStatus(200);
@@ -41,6 +43,7 @@ class UpdateModpackTest extends TestCase
             $this->assertSame('Revised Modpack', $modpack->name);
             $this->assertSame('revised-modpack', $modpack->slug);
             $this->assertSame('http://example.com/revised', $modpack->url);
+            $this->assertSame('public', $modpack->visibility);
             $response->assertExactJson($modpack->jsonSerialize());
         });
     }
@@ -153,12 +156,41 @@ class UpdateModpackTest extends TestCase
         $this->assertArraySubset($this->originalParams(), $modpack->fresh()->getAttributes());
     }
 
+    /** @test */
+    public function the_visibility_field_is_required_to_update_a_modpack()
+    {
+        $modpack = factory(Modpack::class)->create($this->originalParams());
+
+        $response = $this->putJson("/api/modpacks/{$modpack->id}", $this->validParams([
+            'visibility' => '',
+        ]));
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('visibility');
+        $this->assertArraySubset($this->originalParams(), $modpack->fresh()->jsonSerialize());
+    }
+
+    /** @test */
+    public function the_visibility_field_must_be_in_list()
+    {
+        $modpack = factory(Modpack::class)->create($this->originalParams());
+
+        $response = $this->putJson("/api/modpacks/{$modpack->id}", $this->validParams([
+            'visibility' => 'transcended',
+        ]));
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('visibility');
+        $this->assertArraySubset($this->originalParams(), $modpack->fresh()->jsonSerialize());
+    }
+
     private function originalParams($overrides = [])
     {
         return array_merge([
-            'name' => 'Existing Modpack',
-            'slug' => 'existing-modpack',
-            'url'  => 'http://example.com/original',
+            'name'       => 'Existing Modpack',
+            'slug'       => 'existing-modpack',
+            'url'        => 'http://example.com/original',
+            'visibility' => 'private',
         ], $overrides);
     }
 
@@ -170,9 +202,10 @@ class UpdateModpackTest extends TestCase
     private function validParams($overrides = [])
     {
         return array_merge([
-            'name' => 'Revised Modpack',
-            'slug' => 'revised-modpack',
-            'url'  => 'http://example.com/revised',
+            'name'       => 'Revised Modpack',
+            'slug'       => 'revised-modpack',
+            'url'        => 'http://example.com/revised',
+            'visibility' => 'public',
         ], $overrides);
     }
 }
