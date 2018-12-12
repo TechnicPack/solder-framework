@@ -13,6 +13,7 @@ namespace TechnicPack\SolderFramework\Tests\Feature\Modpack;
 
 use TechnicPack\SolderFramework\Build;
 use TechnicPack\SolderFramework\Modpack;
+use TechnicPack\SolderFramework\LauncherClient;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Http\Middleware\Authenticate;
@@ -107,5 +108,19 @@ class ShowModpackTest extends TestCase
         $response->assertJsonFragment([
             'id' => $buildA->id,
         ]);
+    }
+
+    /** @test **/
+    public function authorized_clients_can_be_included()
+    {
+        $modpack = factory(Modpack::class)->create();
+        $client = factory(LauncherClient::class)->create();
+        $modpack->clients()->attach($client);
+
+        $response = $this->getJson("/api/modpacks/{$modpack->id}?include=clients");
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['clients']);
+        $response->assertJsonCount(1, 'clients');
     }
 }

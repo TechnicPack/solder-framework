@@ -81,7 +81,12 @@ class ModpackController extends BaseController
     public function show(Request $request)
     {
         $modpack = QueryBuilder::for($this->modpack)
-            ->allowedIncludes('builds', 'latest', 'recommended')
+            ->allowedIncludes([
+                'builds',
+                'latest',
+                'recommended',
+                'clients',
+            ])
             ->findOrFail($request->modpack);
 
         return response()->json($modpack);

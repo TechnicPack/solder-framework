@@ -3,32 +3,38 @@
         <div class="card-header">Modpack Visibility</div>
 
         <div class="card-body">
-            <p>Modpack visibility settings only apply to integration with TechnicPack.net and still require that you
-                link the modpack with your TechnicPack.net account.</p>
+            <form role="form">
+                <div class="row">
+                    <div class="col-md-9 offset-1">
+                        <div class="custom-control custom-radio">
+                            <input @click="setVisibility('hidden')" type="radio" id="customRadio1" name="customRadio" class="custom-control-input" :checked="modpack.visibility === 'hidden'">
+                            <label class="custom-control-label" for="customRadio1">Hidden</label>
+                        </div>
 
-            <div class="list-group">
-                <button @click="setVisibility('hidden')" class="list-group-item list-group-item-action flex-column align-items-start" :class="{ active: modpack.visibility === 'hidden' }">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1"><i class="fa fa-fw fa-eye-slash"></i> Hidden</h5>
+                        <small class="form-text mb-2 ml-4 mt-0 text-muted">
+                            Hidden modpacks will not show up the modpack list regardless of whether or not a client has access to the modpack.
+                        </small>
+
+                        <div class="custom-control custom-radio">
+                            <input @click="setVisibility('private')" type="radio" id="customRadio2" name="customRadio" class="custom-control-input" :checked="modpack.visibility === 'private'">
+                            <label class="custom-control-label" for="customRadio2">Private</label>
+                        </div>
+
+                        <small class="form-text mb-2 ml-4 mt-0 text-muted">
+                            Private modpacks will only be available to clients that are linked to this modpack. You can link clients below. You can also individually mark builds as private.
+                        </small>
+
+                        <div class="custom-control custom-radio">
+                            <input @click="setVisibility('public')" type="radio" id="customRadio3" name="customRadio" class="custom-control-input" :checked="modpack.visibility === 'public'">
+                            <label class="custom-control-label" for="customRadio3">Public</label>
+                        </div>
+
+                        <small class="form-text mb-2 ml-4 mt-0 text-muted">
+                            Public modpacks can be seen by and shared with anyone using the Technic Launcher.
+                        </small>
                     </div>
-                    <p class="mb-1">Hidden modpacks will not show up the modpack list regardless of whether or not a client has access to the modpack.</p>
-                </button>
-
-                <button @click="setVisibility('private')" class="list-group-item list-group-item-action flex-column align-items-start" :class="{ active: modpack.visibility === 'private' }">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1"><i class="fa fa-fw fa-low-vision"></i> Private</h5>
-                    </div>
-                    <p class="mb-1">Private modpacks will only be available to clients that are linked to this modpack. You can link clients below. You can also individually mark builds as private.</p>
-                </button>
-
-                <button @click="setVisibility('public')" class="list-group-item list-group-item-action flex-column align-items-start" :class="{ active: modpack.visibility === 'public' }">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1"><i class="fa fa-fw fa-eye"></i> Public</h5>
-                    </div>
-                    <p class="mb-1">Public modpacks can be seen by and shared with anyone using the Technic Launcher.</p>
-                </button>
-            </div>
-
+                </div>
+            </form>
         </div>
     </div>
 </template>

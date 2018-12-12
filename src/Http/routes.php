@@ -44,3 +44,6 @@ Route::apiResource('platform-keys', 'PlatformKeyController');
 
 // Launcher Client Routes ..
 Route::apiResource('launcher-clients', 'LauncherClientController');
+
+// Modpack Authorized Client Routes ..
+Route::match(['post', 'put', 'patch'], 'authorized-clients', 'AuthorizedClientsController@sync');

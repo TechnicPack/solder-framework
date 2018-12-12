@@ -123,6 +123,16 @@ class Modpack extends Model
     }
 
     /**
+     * The authorized clients.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function clients()
+    {
+        return $this->belongsToMany(config('solder.model.launcherClient'), 'modpack_authorized_clients');
+    }
+
+    /**
      * Get the full URL for the modpack icon.
      *
      * @return string

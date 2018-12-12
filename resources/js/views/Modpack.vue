@@ -57,6 +57,7 @@
                     <!-- Visibility -->
                     <div role="tabcard" class="tab-pane" id="visibility">
                         <modpack-visibility :modpack="modpack"></modpack-visibility>
+                        <modpack-authorized-clients v-if="modpack.visibility === 'private'" :modpack="modpack" :clients="modpack.clients"></modpack-authorized-clients>
                     </div>
 
                     <!-- Settings -->
@@ -104,6 +105,7 @@
 
 <script>
     import Modpack from '../models/Modpack'
+    import ModpackAuthorizedClients from '../components/modpacks/ModpackAuthorizedClients'
     import ModpackCreateBuild from '../components/modpacks/ModpackCreateBuild'
     import ModpackCurrentBuilds from '../components/modpacks/ModpackCurrentBuilds'
     import ModpackVisibility from '../components/modpacks/ModpackVisibility'
@@ -114,6 +116,7 @@
         props: ['modpackId'],
 
         components: {
+            ModpackAuthorizedClients,
             ModpackCreateBuild,
             ModpackCurrentBuilds,
             ModpackVisibility,
@@ -128,7 +131,8 @@
         data() {
             return {
                 modpack: {
-                    builds: []
+                    builds: [],
+                    clients: [],
                 }
             }
         },
@@ -164,7 +168,7 @@
              */
             async getModpack() {
                 this.modpack = await Modpack
-                    .include('builds', 'latest', 'recommended')
+                    .include('builds', 'latest', 'recommended', 'clients')
                     .find(this.modpackId);
             },
 
