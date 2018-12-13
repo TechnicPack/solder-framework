@@ -26,6 +26,16 @@ class LauncherClient extends Model
     ];
 
     /**
+     * Related modpacks.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function modpacks()
+    {
+        return $this->belongsToMany(config('solder.model.modpack'), 'modpack_authorized_clients');
+    }
+
+    /**
      * Check if the given token is valid.
      *
      * @param $token
