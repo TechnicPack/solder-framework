@@ -11,7 +11,7 @@
 
 namespace TechnicPack\SolderFramework\Tests\Feature\Legacy;
 
-use TechnicPack\SolderFramework\PlatformKey;
+use TechnicPack\SolderFramework\TechnicKey;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -22,7 +22,7 @@ class VerifyKeyTest extends TestCase
     /** @test **/
     public function it_validates_keys()
     {
-        $key = factory(PlatformKey::class)->create(['token' => 'key-token', 'name' => 'My Key']);
+        $key = factory(TechnicKey::class)->create(['token' => 'key-token', 'name' => 'My Key']);
 
         $response = $this->getJson('/api/verify/key-token');
 

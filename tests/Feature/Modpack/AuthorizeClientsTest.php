@@ -12,7 +12,7 @@
 namespace TechnicPack\SolderFramework\Tests\Feature\Modpack;
 
 use TechnicPack\SolderFramework\Modpack;
-use TechnicPack\SolderFramework\LauncherClient;
+use TechnicPack\SolderFramework\TechnicClient;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Http\Middleware\Authenticate;
@@ -25,8 +25,8 @@ class AuthorizeClientsTest extends TestCase
     public function clients_can_be_added_to_the_authorized_list()
     {
         $modpack = factory(Modpack::class)->create();
-        $clientA = factory(LauncherClient::class)->create();
-        $clientB = factory(LauncherClient::class)->create();
+        $clientA = factory(TechnicClient::class)->create();
+        $clientB = factory(TechnicClient::class)->create();
 
         $response = $this->postJson('/api/authorized-clients', [
             'modpack_id' => $modpack->id,
@@ -48,8 +48,8 @@ class AuthorizeClientsTest extends TestCase
     public function authorized_clients_can_be_removed_from_modpack()
     {
         $modpack = factory(Modpack::class)->create();
-        $clientA = factory(LauncherClient::class)->create();
-        $clientB = factory(LauncherClient::class)->create();
+        $clientA = factory(TechnicClient::class)->create();
+        $clientB = factory(TechnicClient::class)->create();
         $modpack->clients()->sync($clientA, $clientB);
 
         $response = $this->postJson('/api/authorized-clients', [
@@ -126,7 +126,7 @@ class AuthorizeClientsTest extends TestCase
     private function validParams($overrides = [])
     {
         $modpack = factory(Modpack::class)->create();
-        $client = factory(LauncherClient::class)->create();
+        $client = factory(TechnicClient::class)->create();
 
         return array_merge([
             'modpack_id' => $modpack->id,

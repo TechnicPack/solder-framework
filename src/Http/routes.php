@@ -40,10 +40,10 @@ Route::delete('/mods/{mod}/versions/{version}/package', 'PackageController@destr
 Route::apiResource('dependencies', 'DependencyController')->only(['store', 'destroy']);
 
 // Platform Key Routes ..
-Route::apiResource('platform-keys', 'PlatformKeyController');
+Route::apiResource('technic-keys', 'TechnicKeyController');
 
 // Launcher Client Routes ..
-Route::apiResource('launcher-clients', 'LauncherClientController');
+Route::apiResource('technic-clients', 'TechnicClientController');
 
 // Modpack Authorized Client Routes ..
 Route::match(['post', 'put', 'patch'], 'authorized-clients', 'AuthorizedClientsController@sync');

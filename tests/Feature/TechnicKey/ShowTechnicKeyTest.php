@@ -9,31 +9,26 @@
  * file that was distributed with this source code.
  */
 
-namespace TechnicPack\SolderFramework\Tests\Feature\PlatformKey;
+namespace TechnicPack\SolderFramework\Tests\Feature\TechnicKey;
 
-use TechnicPack\SolderFramework\PlatformKey;
+use TechnicPack\SolderFramework\TechnicKey;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Http\Middleware\Authenticate;
 
-class ListPlatformKeysTest extends TestCase
+class ShowTechnicKeyTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test **/
-    public function it_lists_keys()
+    public function it_shows_a_key()
     {
-        $keyA = factory(PlatformKey::class)->create();
-        $keyB = factory(PlatformKey::class)->create();
+        $key = factory(TechnicKey::class)->create();
 
-        $response = $this->getJson('/api/platform-keys');
+        $response = $this->getJson("/api/technic-keys/{$key->id}");
 
         $response->assertStatus(200);
-        $response->assertJsonCount(2);
-        $response->assertExactJson([
-            $keyA->toArray(),
-            $keyB->toArray(),
-        ]);
+        $response->assertJsonFragment($key->toArray());
     }
 
     /** @test **/
@@ -43,8 +38,18 @@ class ListPlatformKeysTest extends TestCase
             Authenticate::class,
         ]);
 
-        $response = $this->getJson('/api/platform-keys');
+        $key = factory(TechnicKey::class)->create();
+
+        $response = $this->getJson("/api/technic-keys/{$key->id}");
 
         $response->assertStatus(401);
+    }
+
+    /** @test */
+    public function it_drops_invalid_requests()
+    {
+        $response = $this->getJson('/api/technic-keys/99');
+
+        $response->assertStatus(404);
     }
 }

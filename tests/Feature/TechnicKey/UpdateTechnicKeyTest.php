@@ -9,32 +9,32 @@
  * file that was distributed with this source code.
  */
 
-namespace TechnicPack\SolderFramework\Tests\Feature\PlatformKey;
+namespace TechnicPack\SolderFramework\Tests\Feature\TechnicKey;
 
-use TechnicPack\SolderFramework\PlatformKey;
+use TechnicPack\SolderFramework\TechnicKey;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Http\Middleware\Authenticate;
 
-class UpdatePlatformKeyTest extends TestCase
+class UpdateTechnicKeyTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test **/
     public function update_a_key()
     {
-        $key = factory(PlatformKey::class)->create([
+        $key = factory(TechnicKey::class)->create([
             'name'        => 'Existing Key',
             'token'       => 'existing-key',
         ]);
 
-        $response = $this->putJson("/api/platform-keys/{$key->id}", [
+        $response = $this->putJson("/api/technic-keys/{$key->id}", [
             'name'        => 'Revised Key',
             'token'       => 'revised-key',
         ]);
 
         $response->assertStatus(200);
-        $this->assertCount(1, PlatformKey::all());
+        $this->assertCount(1, TechnicKey::all());
         $response->assertExactJson($key->fresh()->toArray());
     }
 
@@ -45,9 +45,9 @@ class UpdatePlatformKeyTest extends TestCase
             Authenticate::class,
         ]);
 
-        $key = factory(PlatformKey::class)->create();
+        $key = factory(TechnicKey::class)->create();
 
-        $response = $this->putJson("/api/platform-keys/{$key->id}", $this->validParams());
+        $response = $this->putJson("/api/technic-keys/{$key->id}", $this->validParams());
 
         $response->assertStatus(401);
     }
@@ -55,7 +55,7 @@ class UpdatePlatformKeyTest extends TestCase
     /** @test */
     public function drop_invalid_requests()
     {
-        $response = $this->putJson('/api/platform-keys/99', $this->validParams());
+        $response = $this->putJson('/api/technic-keys/99', $this->validParams());
 
         $response->assertStatus(404);
     }
@@ -63,9 +63,9 @@ class UpdatePlatformKeyTest extends TestCase
     /** @test */
     public function name_is_required()
     {
-        $key = factory(PlatformKey::class)->create();
+        $key = factory(TechnicKey::class)->create();
 
-        $response = $this->putJson("/api/platform-keys/{$key->id}", $this->validParams([
+        $response = $this->putJson("/api/technic-keys/{$key->id}", $this->validParams([
             'name' => '',
         ]));
 
@@ -76,9 +76,9 @@ class UpdatePlatformKeyTest extends TestCase
     /** @test */
     public function token_is_required()
     {
-        $key = factory(PlatformKey::class)->create();
+        $key = factory(TechnicKey::class)->create();
 
-        $response = $this->putJson("/api/platform-keys/{$key->id}", $this->validParams([
+        $response = $this->putJson("/api/technic-keys/{$key->id}", $this->validParams([
             'token' => '',
         ]));
 

@@ -13,7 +13,7 @@ namespace TechnicPack\SolderFramework;
 
 use Illuminate\Database\Eloquent\Model;
 
-class LauncherClient extends Model
+class TechnicClient extends Model
 {
     /**
      * The attributes that are mass assignable.

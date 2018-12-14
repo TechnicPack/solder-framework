@@ -38,7 +38,7 @@
 </template>
 
 <script>
-    import LauncherClient from "../../models/LauncherClient";
+    import TechnicClient from "../../models/TechnicClient";
     import AuthorizedClient from "../../models/AuthorizedClient";
 
     export default {
@@ -70,7 +70,7 @@
              * Get the clients.
              */
             async getAllClients() {
-                this.all_clients = await LauncherClient.get();
+                this.all_clients = await TechnicClient.get();
             },
 
             /**

@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace TechnicPack\SolderFramework\Tests\Feature\PlatformKey;
+namespace TechnicPack\SolderFramework\Tests\Feature\TechnicKey;
 
-use TechnicPack\SolderFramework\PlatformKey;
+use TechnicPack\SolderFramework\TechnicKey;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Http\Middleware\Authenticate;
 
-class DestroyPlatformKeyTest extends TestCase
+class DestroyTechnicKeyTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -24,12 +24,12 @@ class DestroyPlatformKeyTest extends TestCase
     public function a_key_can_be_destroyed()
     {
         $this->withoutExceptionHandling();
-        $key = factory(PlatformKey::class)->create();
+        $key = factory(TechnicKey::class)->create();
 
-        $response = $this->deleteJson("/api/platform-keys/{$key->id}");
+        $response = $this->deleteJson("/api/technic-keys/{$key->id}");
 
         $response->assertStatus(204);
-        $this->assertCount(0, PlatformKey::all());
+        $this->assertCount(0, TechnicKey::all());
     }
 
     /** @test **/
@@ -39,12 +39,12 @@ class DestroyPlatformKeyTest extends TestCase
             Authenticate::class,
         ]);
 
-        $key = factory(PlatformKey::class)->create();
+        $key = factory(TechnicKey::class)->create();
 
-        $response = $this->deleteJson("/api/platform-keys/{$key->id}");
+        $response = $this->deleteJson("/api/technic-keys/{$key->id}");
 
         $response->assertStatus(401);
-        $this->assertCount(1, PlatformKey::all());
+        $this->assertCount(1, TechnicKey::all());
     }
 
     /** @test */

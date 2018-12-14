@@ -46,7 +46,7 @@ class AuthorizedClientsController extends BaseController
         $request->validate([
             'modpack_id'   => ['required', 'exists:modpacks,id'],
             'clients'      => ['nullable', 'array'],
-            'clients.*'    => ['exists:launcher_clients,id'],
+            'clients.*'    => ['exists:technic_clients,id'],
         ]);
 
         $modpack = $this->modpack::findOrFail($request->get('modpack_id'));

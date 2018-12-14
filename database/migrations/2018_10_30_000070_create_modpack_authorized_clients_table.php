@@ -23,7 +23,7 @@ class CreateModpackAuthorizedClientsTable extends Migration
         Schema::create('modpack_authorized_clients', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('modpack_id');
-            $table->unsignedInteger('launcher_client_id');
+            $table->unsignedInteger('technic_client_id');
         });
     }
 }

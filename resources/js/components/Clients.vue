@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="card card-default">
-            <div class="card-header">Add Launcher Client</div>
+            <div class="card-header">Add Technic Client</div>
 
             <div class="card-body">
                 <form role="form">
@@ -87,7 +87,7 @@
 </template>
 
 <script>
-    import LauncherClient from "../models/LauncherClient";
+    import TechnicClient from "../models/TechnicClient";
 
     export default {
         /**
@@ -96,7 +96,7 @@
         data() {
             return {
                 clients: [],
-                client: new LauncherClient({}),
+                client: new TechnicClient({}),
             }
         },
 
@@ -112,7 +112,7 @@
              * Get the clients.
              */
             async getClients() {
-                this.clients = await LauncherClient.get();
+                this.clients = await TechnicClient.get();
             },
 
             /**
@@ -127,7 +127,7 @@
                         () => {
                             Bus.$emit('updateMod');
                             this.client.finishProcessing();
-                            this.client = new LauncherClient({});
+                            this.client = new TechnicClient({});
                             this.getClients();
                         },
                         (error) => {

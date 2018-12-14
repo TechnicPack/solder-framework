@@ -9,26 +9,26 @@
  * file that was distributed with this source code.
  */
 
-namespace TechnicPack\SolderFramework\Tests\Feature\LauncherClient;
+namespace TechnicPack\SolderFramework\Tests\Feature\TechnicClient;
 
-use TechnicPack\SolderFramework\LauncherClient;
+use TechnicPack\SolderFramework\TechnicClient;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Http\Middleware\Authenticate;
 
-class DestroyLauncherClientTest extends TestCase
+class DestroyTechnicClientTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test **/
     public function a_client_can_be_destroyed()
     {
-        $client = factory(LauncherClient::class)->create();
+        $client = factory(TechnicClient::class)->create();
 
-        $response = $this->deleteJson("/api/launcher-clients/{$client->id}");
+        $response = $this->deleteJson("/api/technic-clients/{$client->id}");
 
         $response->assertStatus(204);
-        $this->assertCount(0, LauncherClient::all());
+        $this->assertCount(0, TechnicClient::all());
     }
 
     /** @test **/
@@ -38,18 +38,18 @@ class DestroyLauncherClientTest extends TestCase
             Authenticate::class,
         ]);
 
-        $client = factory(LauncherClient::class)->create();
+        $client = factory(TechnicClient::class)->create();
 
-        $response = $this->deleteJson("/api/launcher-clients/{$client->id}");
+        $response = $this->deleteJson("/api/technic-clients/{$client->id}");
 
         $response->assertStatus(401);
-        $this->assertCount(1, LauncherClient::all());
+        $this->assertCount(1, TechnicClient::all());
     }
 
     /** @test */
     public function destroying_an_invalid_client_returns_a_404_error()
     {
-        $response = $this->deleteJson('/api/client/99');
+        $response = $this->deleteJson('/api/technic-clients/99');
 
         $response->assertStatus(404);
     }

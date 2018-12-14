@@ -19,7 +19,7 @@ class KeyController extends BaseController
     /**
      * The key model.
      *
-     * @var \TechnicPack\SolderFramework\PlatformKey
+     * @var \TechnicPack\SolderFramework\TechnicKey
      */
     private $key;
 
@@ -29,7 +29,7 @@ class KeyController extends BaseController
     public function __construct()
     {
         $this->middleware('api');
-        $this->key = config('solder.model.platformKey');
+        $this->key = config('solder.model.technicKey');
     }
 
     /**

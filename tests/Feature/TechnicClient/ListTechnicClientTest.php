@@ -9,24 +9,24 @@
  * file that was distributed with this source code.
  */
 
-namespace TechnicPack\SolderFramework\Tests\Feature\LauncherClient;
+namespace TechnicPack\SolderFramework\Tests\Feature\TechnicClient;
 
-use TechnicPack\SolderFramework\LauncherClient;
+use TechnicPack\SolderFramework\TechnicClient;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Http\Middleware\Authenticate;
 
-class ListLauncherClientTest extends TestCase
+class ListTechnicClientTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test **/
     public function it_lists_clients()
     {
-        $clientA = factory(LauncherClient::class)->create();
-        $clientB = factory(LauncherClient::class)->create();
+        $clientA = factory(TechnicClient::class)->create();
+        $clientB = factory(TechnicClient::class)->create();
 
-        $response = $this->getJson('/api/launcher-clients');
+        $response = $this->getJson('/api/technic-clients');
 
         $response->assertStatus(200);
         $response->assertJsonCount(2);
@@ -43,7 +43,7 @@ class ListLauncherClientTest extends TestCase
             Authenticate::class,
         ]);
 
-        $response = $this->getJson('/api/launcher-clients');
+        $response = $this->getJson('/api/technic-clients');
 
         $response->assertStatus(401);
     }

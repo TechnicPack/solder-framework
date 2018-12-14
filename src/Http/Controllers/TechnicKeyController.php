@@ -14,14 +14,14 @@ namespace TechnicPack\SolderFramework\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 
-class PlatformKeyController extends BaseController
+class TechnicKeyController extends BaseController
 {
     /**
      * The key model.
      *
-     * @var \TechnicPack\SolderFramework\PlatformKey
+     * @var \TechnicPack\SolderFramework\TechnicKey
      */
-    protected $platformKey;
+    protected $technicKey;
 
     /**
      * KeyController constructor.
@@ -30,7 +30,7 @@ class PlatformKeyController extends BaseController
     {
         $this->middleware('api');
         $this->middleware('auth:api');
-        $this->platformKey = config('solder.model.platformKey');
+        $this->technicKey = config('solder.model.technicKey');
     }
 
     /**
@@ -40,7 +40,7 @@ class PlatformKeyController extends BaseController
      */
     public function index()
     {
-        $keys = $this->platformKey::all();
+        $keys = $this->technicKey::all();
 
         return response()->json($keys);
     }
@@ -59,7 +59,7 @@ class PlatformKeyController extends BaseController
             'token' => ['required'],
         ]);
 
-        $key = $this->platformKey::create($attributes);
+        $key = $this->technicKey::create($attributes);
 
         return response()->json($key, 201);
     }
@@ -73,7 +73,7 @@ class PlatformKeyController extends BaseController
      */
     public function show(Request $request)
     {
-        $key = $this->platformKey::findOrFail($request->route('platform_key'));
+        $key = $this->technicKey::findOrFail($request->route('technic_key'));
 
         return response()->json($key);
     }
@@ -87,7 +87,7 @@ class PlatformKeyController extends BaseController
      */
     public function update(Request $request)
     {
-        $key = $this->platformKey::findOrFail($request->route('platform_key'));
+        $key = $this->technicKey::findOrFail($request->route('technic_key'));
 
         $attributes = $request->validate([
             'name'  => ['required'],
@@ -108,7 +108,7 @@ class PlatformKeyController extends BaseController
      */
     public function destroy(Request $request)
     {
-        $key = $this->platformKey::findOrFail($request->route('platform_key'));
+        $key = $this->technicKey::findOrFail($request->route('technic_key'));
         $key->delete();
 
         return response()->json([], 204);

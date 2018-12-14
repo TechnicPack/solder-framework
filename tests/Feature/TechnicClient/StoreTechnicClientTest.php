@@ -9,28 +9,28 @@
  * file that was distributed with this source code.
  */
 
-namespace TechnicPack\SolderFramework\Tests\Feature\PlatformKey;
+namespace TechnicPack\SolderFramework\Tests\Feature\TechnicClient;
 
-use TechnicPack\SolderFramework\PlatformKey;
+use TechnicPack\SolderFramework\TechnicClient;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Http\Middleware\Authenticate;
 
-class StorePlatformKeyTest extends TestCase
+class StoreTechnicClientTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test **/
-    public function it_stores_a_key()
+    public function it_stores_a_client()
     {
-        $response = $this->postJson('/api/platform-keys', [
-            'name'        => 'Test Key',
-            'token'       => 'test-key',
+        $response = $this->postJson('/api/technic-clients', [
+            'name'        => 'Test client',
+            'token'       => 'test-client',
         ]);
 
         $response->assertStatus(201);
-        $this->assertCount(1, PlatformKey::all());
-        $response->assertJsonFragment(PlatformKey::first()->toArray());
+        $this->assertCount(1, TechnicClient::all());
+        $response->assertJsonFragment(TechnicClient::first()->toArray());
     }
 
     /** @test **/
@@ -40,34 +40,34 @@ class StorePlatformKeyTest extends TestCase
             Authenticate::class,
         ]);
 
-        $response = $this->postJson('/api/platform-keys', $this->validParams());
+        $response = $this->postJson('/api/technic-clients', $this->validParams());
 
         $response->assertStatus(401);
-        $this->assertCount(0, PlatformKey::all());
+        $this->assertCount(0, TechnicClient::all());
     }
 
     /** @test */
     public function name_is_required()
     {
-        $response = $this->postJson('/api/platform-keys', $this->validParams([
+        $response = $this->postJson('/api/technic-clients', $this->validParams([
             'name' => '',
         ]));
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('name');
-        $this->assertSame(0, PlatformKey::count());
+        $this->assertSame(0, TechnicClient::count());
     }
 
     /** @test */
     public function token_is_required()
     {
-        $response = $this->postJson('/api/platform-keys', $this->validParams([
+        $response = $this->postJson('/api/technic-clients', $this->validParams([
             'token' => '',
         ]));
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('token');
-        $this->assertSame(0, PlatformKey::count());
+        $this->assertSame(0, TechnicClient::count());
     }
 
     /**
@@ -80,8 +80,8 @@ class StorePlatformKeyTest extends TestCase
     protected function validParams($overrides = [])
     {
         return array_merge([
-            'name'  => 'Test Key',
-            'token' => 'test-key',
+            'name'  => 'Test client',
+            'token' => 'test-client',
         ], $overrides);
     }
 }

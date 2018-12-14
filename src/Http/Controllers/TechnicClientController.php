@@ -14,14 +14,14 @@ namespace TechnicPack\SolderFramework\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 
-class LauncherClientController extends BaseController
+class TechnicClientController extends BaseController
 {
     /**
-     * The LauncherClient model.
+     * The TechnicClient model.
      *
-     * @var \TechnicPack\SolderFramework\LauncherClient
+     * @var \TechnicPack\SolderFramework\TechnicClient
      */
-    protected $launcherClient;
+    protected $technicClient;
 
     /**
      * KeyController constructor.
@@ -30,7 +30,7 @@ class LauncherClientController extends BaseController
     {
         $this->middleware('api');
         $this->middleware('auth:api');
-        $this->launcherClient = config('solder.model.launcherClient');
+        $this->technicClient = config('solder.model.technicClient');
     }
 
     /**
@@ -40,7 +40,7 @@ class LauncherClientController extends BaseController
      */
     public function index()
     {
-        $clients = $this->launcherClient::all();
+        $clients = $this->technicClient::all();
 
         return response()->json($clients);
     }
@@ -59,7 +59,7 @@ class LauncherClientController extends BaseController
             'token' => ['required'],
         ]);
 
-        $client = $this->launcherClient::create($attributes);
+        $client = $this->technicClient::create($attributes);
 
         return response()->json($client, 201);
     }
@@ -73,7 +73,7 @@ class LauncherClientController extends BaseController
      */
     public function show(Request $request)
     {
-        $client = $this->launcherClient::findOrFail($request->route('launcher_client'));
+        $client = $this->technicClient::findOrFail($request->route('technic_client'));
 
         return response()->json($client);
     }
@@ -87,7 +87,7 @@ class LauncherClientController extends BaseController
      */
     public function update(Request $request)
     {
-        $client = $this->launcherClient::findOrFail($request->route('launcher_client'));
+        $client = $this->technicClient::findOrFail($request->route('technic_client'));
 
         $attributes = $request->validate([
             'name'  => ['required'],
@@ -108,7 +108,7 @@ class LauncherClientController extends BaseController
      */
     public function destroy(Request $request)
     {
-        $client = $this->launcherClient::findOrFail($request->route('launcher_client'));
+        $client = $this->technicClient::findOrFail($request->route('technic_client'));
         $client->delete();
 
         return response()->json([], 204);

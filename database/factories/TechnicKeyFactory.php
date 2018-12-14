@@ -11,7 +11,7 @@
 
 use Faker\Generator as Faker;
 
-$factory->define(\TechnicPack\SolderFramework\LauncherClient::class, function (Faker $faker) {
+$factory->define(\TechnicPack\SolderFramework\TechnicKey::class, function (Faker $faker) {
     return [
         'token' => $faker->uuid,
         'name'  => $faker->name,

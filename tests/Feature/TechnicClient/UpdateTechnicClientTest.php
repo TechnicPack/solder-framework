@@ -9,32 +9,32 @@
  * file that was distributed with this source code.
  */
 
-namespace TechnicPack\SolderFramework\Tests\Feature\LauncherClient;
+namespace TechnicPack\SolderFramework\Tests\Feature\TechnicClient;
 
-use TechnicPack\SolderFramework\LauncherClient;
+use TechnicPack\SolderFramework\TechnicClient;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Http\Middleware\Authenticate;
 
-class UpdateLauncherClientTest extends TestCase
+class UpdateTechnicClientTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test **/
     public function update_a_client()
     {
-        $client = factory(LauncherClient::class)->create([
+        $client = factory(TechnicClient::class)->create([
             'name'        => 'Existing client',
             'token'       => 'existing-client',
         ]);
 
-        $response = $this->putJson("/api/launcher-clients/{$client->id}", [
+        $response = $this->putJson("/api/technic-clients/{$client->id}", [
             'name'        => 'Revised client',
             'token'       => 'revised-client',
         ]);
 
         $response->assertStatus(200);
-        $this->assertCount(1, LauncherClient::all());
+        $this->assertCount(1, TechnicClient::all());
         $response->assertExactJson($client->fresh()->toArray());
     }
 
@@ -45,9 +45,9 @@ class UpdateLauncherClientTest extends TestCase
             Authenticate::class,
         ]);
 
-        $client = factory(LauncherClient::class)->create();
+        $client = factory(TechnicClient::class)->create();
 
-        $response = $this->putJson("/api/launcher-clients/{$client->id}", $this->validParams());
+        $response = $this->putJson("/api/technic-clients/{$client->id}", $this->validParams());
 
         $response->assertStatus(401);
     }
@@ -55,7 +55,7 @@ class UpdateLauncherClientTest extends TestCase
     /** @test */
     public function drop_invalid_requests()
     {
-        $response = $this->putJson('/api/launcher-clients/99', $this->validParams());
+        $response = $this->putJson('/api/technic-clients/99', $this->validParams());
 
         $response->assertStatus(404);
     }
@@ -63,9 +63,9 @@ class UpdateLauncherClientTest extends TestCase
     /** @test */
     public function name_is_required()
     {
-        $client = factory(LauncherClient::class)->create();
+        $client = factory(TechnicClient::class)->create();
 
-        $response = $this->putJson("/api/launcher-clients/{$client->id}", $this->validParams([
+        $response = $this->putJson("/api/technic-clients/{$client->id}", $this->validParams([
             'name' => '',
         ]));
 
@@ -76,9 +76,9 @@ class UpdateLauncherClientTest extends TestCase
     /** @test */
     public function token_is_required()
     {
-        $client = factory(LauncherClient::class)->create();
+        $client = factory(TechnicClient::class)->create();
 
-        $response = $this->putJson("/api/launcher-clients/{$client->id}", $this->validParams([
+        $response = $this->putJson("/api/technic-clients/{$client->id}", $this->validParams([
             'token' => '',
         ]));
 

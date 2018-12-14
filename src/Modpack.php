@@ -129,7 +129,7 @@ class Modpack extends Model
      */
     public function clients()
     {
-        return $this->belongsToMany(config('solder.model.launcherClient'), 'modpack_authorized_clients');
+        return $this->belongsToMany(config('solder.model.technicClient'), 'modpack_authorized_clients');
     }
 
     /**
