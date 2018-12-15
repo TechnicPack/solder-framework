@@ -26,6 +26,7 @@ class Build extends Model
         'forge_version',
         'java_version',
         'java_memory',
+        'visibility',
     ];
 
     /**

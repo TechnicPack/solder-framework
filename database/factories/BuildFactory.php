@@ -15,8 +15,15 @@ $factory->define(\TechnicPack\SolderFramework\Build::class, function (Faker $fak
     return [
         'tag'               => $faker->numerify('#.#.#'),
         'minecraft_version' => $faker->numerify('#.#.#'),
+        'visibility'        => 'public',
         'modpack_id'        => function () {
             return factory(\TechnicPack\SolderFramework\Modpack::class)->create()->id;
         },
+    ];
+});
+
+$factory->state(\TechnicPack\SolderFramework\Build::class, 'hidden', function (Faker $faker) {
+    return [
+        'visibility' => 'hidden',
     ];
 });

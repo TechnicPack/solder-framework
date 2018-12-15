@@ -19,6 +19,7 @@
                 <th>Minecraft</th>
                 <th class="text-center">Latest</th>
                 <th class="text-center">Recommended</th>
+                <th class="text-center">Visibility</th>
                 <th>&nbsp;</th>
                 </thead>
 
@@ -36,24 +37,37 @@
                     </td>
                     <td class="text-center">
                         <div class="custom-control custom-radio">
-                            <input type="radio" :id="getRadioID(build, 'latest')"
+                            <input type="radio" :id="getElementId(build, 'latest')"
                                    class="custom-control-input"
                                    :checked="modpack.latest && modpack.latest.id === build.id"
                                    @click="setLatest(build)"
                             >
                             <label class="custom-control-label"
-                                   :for="getRadioID(build, 'latest')">&nbsp;</label>
+                                   :for="getElementId(build, 'latest')">&nbsp;</label>
                         </div>
                     </td>
                     <td class="text-center">
                         <div class="custom-control custom-radio">
-                            <input type="radio" :id="getRadioID(build, 'recommended')"
+                            <input type="radio" :id="getElementId(build, 'recommended')"
                                    class="custom-control-input"
                                    :checked="modpack.recommended && modpack.recommended.id === build.id"
                                    @click="setRecommended(build)"
                             >
                             <label class="custom-control-label"
-                                   :for="getRadioID(build, 'recommended')">&nbsp;</label>
+                                   :for="getElementId(build, 'recommended')">&nbsp;</label>
+                        </div>
+                    </td>
+
+                    <td class="text-center">
+                        <div class="dropdown">
+                            <button class="btn btn-link dropdown-toggle" type="button" :id="getElementId(build, 'visibility')" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{ build.visibility }}
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" :aria-labelledby="getElementId(build, 'visibility')">
+                                <button @click="setVisibility(build, 'hidden')" class="dropdown-item" type="button">Hidden</button>
+                                <button @click="setVisibility(build, 'private')" class="dropdown-item" type="button">Private</button>
+                                <button @click="setVisibility(build, 'public')" class="dropdown-item" type="button">Public</button>
+                            </div>
                         </div>
                     </td>
 
@@ -88,6 +102,8 @@
 <script>
     import LatestBuild from "../../models/LatestBuild";
     import RecommendedBuild from "../../models/RecommendedBuild";
+    import Visibility from "../../models/Visibility";
+    import Build from "../../models/Build";
 
     export default {
         props: ['modpack', 'builds'],
@@ -108,7 +124,7 @@
         },
 
         methods: {
-            getRadioID(build, type) {
+            getElementId(build, type) {
                 return ['build', build.id, type].join('-');
             },
 
@@ -136,6 +152,17 @@
                 Bus.$emit('updateModpack');
             },
 
+            /**
+             * Update the build's visibility.
+             */
+             async setVisibility(build, value) {
+                let visibility = new Visibility({
+                    visibility: value,
+                }).for(new Build(build));
+
+                await visibility.save();
+                Bus.$emit('updateModpack');
+            }
         }
     }
 </script>

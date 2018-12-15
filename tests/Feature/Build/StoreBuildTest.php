@@ -24,7 +24,6 @@ class StoreBuildTest extends TestCase
     /** @test **/
     public function a_build_can_be_stored()
     {
-        $this->withoutExceptionHandling();
         $modpack = factory(Modpack::class)->create();
 
         $response = $this->postJson("/api/modpacks/{$modpack->id}/builds", [
@@ -41,6 +40,7 @@ class StoreBuildTest extends TestCase
             'minecraft_version' => '1.7.10',
             'java_version'      => '1.8',
             'java_memory'       => '2048',
+            'visibility'        => 'hidden',
         ]);
     }
 

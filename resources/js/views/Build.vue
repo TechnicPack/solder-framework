@@ -11,6 +11,7 @@
                     </router-link>
                 </div>
                 <div class="ml-md-4">{{ build.tag }}</div>
+                <div class="ml-md-4">{{ build.visibility }}</div>
             </div>
         </div>
 
@@ -24,6 +25,15 @@
                                     <path d="M16 14v2H4v-2H0V2h4V0h12v2h4v12h-4zM14 3.5V2H6v12h8V3.5zm2 .5v8h2V4h-2zM4 4H2v8h2V4z" />
                                 </svg>
                                 Mods
+                            </a>
+                        </li>
+
+                        <li class="nav-item ">
+                            <a class="nav-link" href="#visibility" aria-controls="visibility" role="tab" data-toggle="tab">
+                                <svg class="icon-20 " viewBox="0 0 20 20     " xmlns="http://www.w3.org/2000/svg ">
+                                    <path d="M.2 10a11 11 0 0 1 19.6 0A11 11 0 0 1 .2 10zm9.8 4a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0-2a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>
+                                </svg>
+                                Visibility
                             </a>
                         </li>
 
@@ -46,6 +56,11 @@
                     <div role="tabcard" class="tab-pane active" id="dependencies">
                         <build-create-dependency :build="build"></build-create-dependency>
                         <build-current-dependencies :dependencies="build.dependencies"></build-current-dependencies>
+                    </div>
+
+                    <!-- Visibility -->
+                    <div role="tabcard" class="tab-pane" id="visibility">
+                        <build-visibility :build="build"></build-visibility>
                     </div>
 
                     <!-- Settings -->
@@ -97,6 +112,7 @@
     import BuildCreateDependency from '../components/builds/BuildCreateDependency';
     import BuildCurrentDependencies from '../components/builds/BuildCurrentDependencies';
     import BuildSettings from '../components/builds/BuildSettings';
+    import BuildVisibility from '../components/builds/BuildVisibility';
 
     export default {
         props: ['modpackId', 'buildId'],
@@ -106,6 +122,7 @@
             BuildCreateDependency,
             BuildCurrentDependencies,
             BuildSettings,
+            BuildVisibility,
         },
 
 

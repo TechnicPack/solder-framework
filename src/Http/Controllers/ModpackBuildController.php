@@ -82,7 +82,7 @@ class ModpackBuildController extends BaseController
 
         $build = $modpack->builds()->create($attributes);
 
-        return response()->json($build, 201);
+        return response()->json($build->fresh(), 201);
     }
 
     /**

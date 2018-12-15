@@ -25,7 +25,7 @@ class ShowBuildTest extends TestCase
     /** @test **/
     public function an_individual_build_can_be_shown()
     {
-        $build = factory(Build::class)->create([
+        $build = factory(Build::class)->state('hidden')->create([
             'tag'               => '1.0.0',
             'minecraft_version' => '1.7.10',
             'java_version'      => '1.8',
@@ -41,6 +41,7 @@ class ShowBuildTest extends TestCase
             'minecraft_version' => '1.7.10',
             'java_version'      => '1.8',
             'java_memory'       => '2048',
+            'visibility'        => 'hidden',
             'created_at'        => $build->created_at->format('Y-m-d H:i:s'),
             'updated_at'        => $build->updated_at->format('Y-m-d H:i:s'),
         ]);

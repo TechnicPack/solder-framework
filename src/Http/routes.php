@@ -26,6 +26,7 @@ Route::apiResource('modpacks', 'ModpackController');
 // Build Routes ..
 Route::match(['post', 'put', 'patch'], '/modpacks/{modpack}/builds/latest', 'ModpackLatestBuildController@update')->name('modpacks.builds.latest.update');
 Route::match(['post', 'put', 'patch'], '/modpacks/{modpack}/builds/recommended', 'ModpackRecommendedBuildController@update')->name('modpacks.builds.recommended.update');
+Route::match(['post', 'put', 'patch'], '/builds/{build}/visibility', 'BuildVisibilityController@update')->name('modpacks.builds.visibility.update');
 Route::apiResource('modpacks.builds', 'ModpackBuildController');
 
 // Mod Routes ..

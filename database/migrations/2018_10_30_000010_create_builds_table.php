@@ -27,6 +27,7 @@ class CreateBuildsTable extends Migration
             $table->string('minecraft_version');
             $table->string('java_version')->nullable();
             $table->integer('java_memory')->nullable();
+            $table->string('visibility')->default('hidden');
             $table->timestamps();
 
             $table->foreign('modpack_id')
