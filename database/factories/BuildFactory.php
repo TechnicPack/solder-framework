@@ -27,3 +27,15 @@ $factory->state(\TechnicPack\SolderFramework\Build::class, 'hidden', function (F
         'visibility' => 'hidden',
     ];
 });
+
+$factory->state(\TechnicPack\SolderFramework\Build::class, 'private', function (Faker $faker) {
+    return [
+        'visibility' => 'private',
+    ];
+});
+
+$factory->state(\TechnicPack\SolderFramework\Build::class, 'public', function (Faker $faker) {
+    return [
+        'visibility' => 'public',
+    ];
+});

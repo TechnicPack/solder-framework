@@ -11,25 +11,108 @@
 
 namespace TechnicPack\SolderFramework\Tests\Feature\Legacy;
 
+use PHPUnit\Framework\Assert;
 use TechnicPack\SolderFramework\Build;
 use TechnicPack\SolderFramework\Modpack;
+use TechnicPack\SolderFramework\TechnicKey;
+use TechnicPack\SolderFramework\TechnicClient;
 use TechnicPack\SolderFramework\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use TechnicPack\SolderFramework\Http\Legacy\BuildResource;
 
 class ShowBuildTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test **/
-    public function show_a_build()
+    public function show_a_build_publicly()
     {
-        $modpack = factory(Modpack::class)->create(['slug' => 'example-modpack']);
-        $build = factory(Build::class)->create(['tag' => '1.0.0', 'modpack_id' => $modpack->id]);
+        // Modpack, Build, Response
+        $expectations = collect([
+            ['hidden', 'hidden', 404],
+            ['hidden', 'private', 404],
+            ['hidden', 'public', 404],
+            ['private', 'hidden', 404],
+            ['private', 'private', 404],
+            ['private', 'public', 404],
+            ['public', 'hidden', 404],
+            ['public', 'private', 404],
+            ['public', 'public', 200],
+        ]);
 
-        $response = $this->getJson('/api/modpack/example-modpack/1.0.0');
+        $expectations->each(function ($expectation) {
+            $modpack = factory(Modpack::class)->state($expectation[0])->create();
+            $build = $modpack->builds()->save(factory(Build::class)->state($expectation[1])->make());
 
-        $response->assertStatus(200);
-        $response->assertExactJson((new BuildResource($build))->jsonSerialize());
+            $response = $this->getJson("/api/modpack/{$modpack->slug}/{$build->tag}");
+
+            $actual = $response->getStatusCode();
+            Assert::assertTrue(
+                $actual === $expectation[2],
+                "Expected status code {$expectation[2]} but received {$actual} for {$expectation[0]} modpack and {$expectation[1]} build."
+            );
+        });
+    }
+
+    /** @test **/
+    public function show_a_build_with_valid_key()
+    {
+        // Modpack, Build, Response
+        $expectations = collect([
+            ['hidden', 'hidden', 404],
+            ['hidden', 'private', 404],
+            ['hidden', 'public', 404],
+            ['private', 'hidden', 404],
+            ['private', 'private', 200],
+            ['private', 'public', 200],
+            ['public', 'hidden', 404],
+            ['public', 'private', 200],
+            ['public', 'public', 200],
+        ]);
+
+        $expectations->each(function ($expectation) {
+            $key = factory(TechnicKey::class)->create();
+            $modpack = factory(Modpack::class)->state($expectation[0])->create();
+            $build = $modpack->builds()->save(factory(Build::class)->state($expectation[1])->make());
+
+            $response = $this->getJson("/api/modpack/{$modpack->slug}/{$build->tag}?k={$key->token}");
+
+            $actual = $response->getStatusCode();
+            Assert::assertTrue(
+                $actual === $expectation[2],
+                "Expected status code {$expectation[2]} but received {$actual} for {$expectation[0]} modpack and {$expectation[1]} build."
+            );
+        });
+    }
+
+    /** @test **/
+    public function show_a_build_with_valid_client()
+    {
+        // Modpack, Build, Response
+        $expectations = collect([
+            ['hidden', 'hidden', 404],
+            ['hidden', 'private', 404],
+            ['hidden', 'public', 404],
+            ['private', 'hidden', 404],
+            ['private', 'private', 200],
+            ['private', 'public', 200],
+            ['public', 'hidden', 404],
+            ['public', 'private', 200],
+            ['public', 'public', 200],
+        ]);
+
+        $expectations->each(function ($expectation) {
+            $client = factory(TechnicClient::class)->create();
+            $modpack = factory(Modpack::class)->state($expectation[0])->create();
+            $build = $modpack->builds()->save(factory(Build::class)->state($expectation[1])->make());
+            $modpack->clients()->attach($client);
+
+            $response = $this->getJson("/api/modpack/{$modpack->slug}/{$build->tag}?cid={$client->token}");
+
+            $actual = $response->getStatusCode();
+            Assert::assertTrue(
+                $actual === $expectation[2],
+                "Expected status code {$expectation[2]} but received {$actual} for {$expectation[0]} modpack and {$expectation[1]} build."
+            );
+        });
     }
 }

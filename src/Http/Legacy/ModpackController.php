@@ -12,6 +12,7 @@
 namespace TechnicPack\SolderFramework\Http\Legacy;
 
 use Illuminate\Http\Request;
+use TechnicPack\SolderFramework\Modpack;
 use Illuminate\Http\Resources\Json\Resource;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -26,11 +27,18 @@ class ModpackController extends BaseController
     protected $modpack;
 
     /**
-     * The modpack model.
+     * The TechnicKey model.
      *
-     * @var \TechnicPack\SolderFramework\Modpack
+     * @var \TechnicPack\SolderFramework\TechnicKey
      */
     protected $key;
+
+    /**
+     * The TechnicClient model.
+     *
+     * @var \TechnicPack\SolderFramework\TechnicClient
+     */
+    protected $client;
 
     /**
      * ModpackController constructor.
@@ -41,6 +49,7 @@ class ModpackController extends BaseController
         $this->middleware('api');
         $this->modpack = config('solder.model.modpack');
         $this->key = config('solder.model.technicKey');
+        $this->client = config('solder.model.technicClient');
     }
 
     /**
@@ -52,10 +61,18 @@ class ModpackController extends BaseController
      */
     public function index(Request $request)
     {
-        $modpacks = $this->modpack::with('builds')->get();
+        $modpacks = $this->modpack::with('builds', 'clients')->get();
 
         $modpacks = $modpacks->filter(function ($modpack) use ($request) {
-            return $this->authorize($modpack, $request);
+            return $this->authorizeModpack($modpack, $request);
+        });
+
+        $modpacks = $modpacks->map(function ($modpack) use ($request) {
+            $builds = $modpack->builds->filter(function ($build) use ($modpack, $request) {
+                return $this->authorizeBuild($build, $modpack, $request);
+            });
+
+            return $modpack->setRelation('builds', $builds);
         });
 
         return new ModpacksCollection($modpacks);
@@ -74,9 +91,13 @@ class ModpackController extends BaseController
             ->with('builds')
             ->firstOrFail();
 
-        if (! $this->authorize($modpack, $request)) {
+        if (! $this->authorizeModpack($modpack, $request)) {
             throw new ModelNotFoundException();
         }
+
+        $modpack->builds = $modpack->builds->filter(function ($build) use ($modpack, $request) {
+            return $this->authorizeBuild($build, $modpack, $request);
+        });
 
         return new ModpackResource($modpack);
     }
@@ -89,17 +110,55 @@ class ModpackController extends BaseController
      *
      * @return bool
      */
-    private function authorize($modpack, Request $request)
+    private function authorizeModpack($modpack, Request $request)
     {
         $modpackIsHidden = 'hidden' === $modpack->visibility;
+        $modpackIsPrivate = 'private' === $modpack->visibility;
         $modpackIsPublic = 'public' === $modpack->visibility;
         $requestHasValidApiKey = $this->key::isValid($request->get('k'));
+        $requestHasAuthorizedClient = $modpack->clients->pluck('token')->contains($request->get('cid'));
 
         if ($modpackIsHidden) {
             return false;
         }
 
         if ($modpackIsPublic || $requestHasValidApiKey) {
+            return true;
+        }
+
+        if ($modpackIsPrivate && $requestHasAuthorizedClient) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if the request is authorized to show the modpack.
+     *
+     * @param $build
+     * @param $modpack
+     * @param Request $request
+     *
+     * @return bool
+     */
+    private function authorizeBuild($build, $modpack, Request $request)
+    {
+        $buildIsHidden = 'hidden' === $build->visibility;
+        $buildIsPrivate = 'private' === $build->visibility;
+        $buildIsPublic = 'public' === $build->visibility;
+        $requestHasValidApiKey = $this->key::isValid($request->get('k'));
+        $requestHasAuthorizedClient = $modpack->clients->pluck('token')->contains($request->get('cid'));
+
+        if ($buildIsHidden) {
+            return false;
+        }
+
+        if ($buildIsPublic || $requestHasValidApiKey) {
+            return true;
+        }
+
+        if ($buildIsPrivate && $requestHasAuthorizedClient) {
             return true;
         }
 
