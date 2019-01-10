@@ -3,9 +3,9 @@
 
 
 vue-api-query@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/vue-api-query/-/vue-api-query-1.1.1.tgz#7aca90e6ecd690fd42e5af91ba8bebadc66bbbff"
-  integrity sha512-jMBGDjR7NBtM+7B+aRCeg3PMYUcjAK85mfxSyFJ0gc6f1df9pcRKvcOwv6Iq+Hd2ZPy3K+tjyQL1Pu4MH3xqJw==
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/vue-api-query/-/vue-api-query-1.2.0.tgz#149ad25954964e4752475bd08927d83e9cd03269"
+  integrity sha512-+69XaF0iLMGFuNoUkMhXzCjO5oT8RaLNJV6h9BGk1EEfAUwC3HydpcXhExMHUj4roNlrNBzwxrCcFAssxcancQ==
 
 vue-router@^3.0.1:
   version "3.0.1"

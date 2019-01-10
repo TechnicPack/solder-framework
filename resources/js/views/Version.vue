@@ -44,7 +44,7 @@
                 <div class="tab-content">
                     <!-- Files -->
                     <div role="tabcard" class="tab-pane active" id="files">
-                        Files
+                        <version-files :version="version"></version-files>
                     </div>
 
                     <!-- Settings -->
@@ -93,6 +93,7 @@
 <script>
     import Mod from '../models/Mod';
     import Version from '../models/Version';
+    import VersionFiles from '../components/versions/VersionFiles';
     import VersionSettings from '../components/versions/VersionSettings';
 
     export default {
@@ -100,6 +101,7 @@
 
 
         components: {
+            VersionFiles,
             VersionSettings,
         },
 

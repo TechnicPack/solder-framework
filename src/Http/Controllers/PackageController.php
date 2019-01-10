@@ -12,7 +12,9 @@
 namespace TechnicPack\SolderFramework\Http\Controllers;
 
 use Illuminate\Http\Request;
+use League\Flysystem\Filesystem;
 use Illuminate\Support\Facades\Storage;
+use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 use Illuminate\Routing\Controller as BaseController;
 
 class PackageController extends BaseController
@@ -61,6 +63,23 @@ class PackageController extends BaseController
         $version->setPackage($request->package);
 
         return response()->json($version, 201);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Request $request)
+    {
+        $version = $this->version::findOrFail($request->version);
+
+        $files = Storage::disk(config('solder.disk.files'));
+        $package = new Filesystem(new ZipArchiveAdapter($files->path($version->package)));
+
+        return response()->json($package->listContents(null, true));
     }
 
     /**

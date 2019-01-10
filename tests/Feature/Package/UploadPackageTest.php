@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace TechnicPack\SolderFramework\Tests\Feature\Version;
+namespace TechnicPack\SolderFramework\Tests\Feature\Package;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
