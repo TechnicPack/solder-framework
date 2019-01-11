@@ -16,10 +16,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * @property string package
+ * @property string package_path
  * @property string package_name
  * @property int package_size
  * @property string package_hash
+ * @property \Illuminate\Database\Eloquent\Collection dependencies
+ * @property Mod mod
  */
 class Version extends Model
 {
@@ -57,6 +59,7 @@ class Version extends Model
      */
     protected $hidden = [
         'mod_id',
+        'package_path',
     ];
 
     /**
@@ -98,7 +101,7 @@ class Version extends Model
      */
     public function getPackageUrlAttribute()
     {
-        return optional($this->package, function ($path) {
+        return optional($this->package_path, function ($path) {
             return $this->storage()->url($path);
         });
     }
@@ -133,7 +136,7 @@ class Version extends Model
             return $this->unsetPackage();
         }
 
-        $this->package = $this->storage()->putFile('files', $package);
+        $this->package_path = $this->storage()->putFile('files', $package);
         $this->package_name = $package->getClientOriginalName();
         $this->package_size = $package->getSize();
         $this->package_hash = $package->getHash();
@@ -148,9 +151,9 @@ class Version extends Model
      */
     private function unsetPackage()
     {
-        $this->storage()->delete($this->package);
+        $this->storage()->delete($this->package_path);
 
-        $this->package = null;
+        $this->package_path = null;
         $this->package_name = null;
         $this->package_size = null;
         $this->package_hash = null;
@@ -160,8 +163,8 @@ class Version extends Model
 
     public function refreshPackageMeta()
     {
-        $this->package_hash = $this->storage()->hash($this->package, 'md5');
-        $this->package_size = $this->storage()->size($this->package);
+        $this->package_hash = $this->storage()->hash($this->package_path, 'md5');
+        $this->package_size = $this->storage()->size($this->package_path);
 
         return $this->save();
     }

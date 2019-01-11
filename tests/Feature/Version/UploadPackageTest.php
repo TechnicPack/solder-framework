@@ -36,14 +36,13 @@ class UploadPackageTest extends TestCase
         Storage::disk(config('solder.disk.files'))->assertExists($file->hashName('files'));
 
         tap($version->fresh(), function ($version) use ($response, $file) {
-            $this->assertSame($file->hashName('files'), $version->package);
+            $this->assertSame($file->hashName('files'), $version->package_path);
             $this->assertSame('ExampleMod-1.0.0.zip', $version->package_name);
             $this->assertSame(1024, $version->package_size);
             $this->assertSame(md5_file($file->path()), $version->package_hash);
 
             $response->assertJsonFragment([
-                'package'      => $version->package,
-                'package_url'  => Storage::url($version->package),
+                'package_url'  => Storage::url($version->package_path),
                 'package_name' => $version->package_name,
                 'package_size' => $version->package_size,
                 'package_hash' => $version->package_hash,
@@ -102,15 +101,15 @@ class UploadPackageTest extends TestCase
     {
         $version = factory(Version::class)->state('with-package')->create();
 
-        Storage::disk(config('solder.disk.files'))->assertExists($version->package);
+        Storage::disk(config('solder.disk.files'))->assertExists($version->package_path);
 
         $response = $this->deleteJson("/api/mods/{$version->mod_id}/versions/{$version->id}/package");
 
         $response->assertStatus(204);
-        Storage::disk(config('solder.disk.files'))->assertMissing($version->package);
+        Storage::disk(config('solder.disk.files'))->assertMissing($version->package_path);
 
         tap($version->fresh(), function ($version) use ($response) {
-            $this->assertNull($version->package);
+            $this->assertNull($version->package_path);
             $this->assertNull($version->package_name);
             $this->assertNull($version->package_size);
             $this->assertNull($version->package_hash);

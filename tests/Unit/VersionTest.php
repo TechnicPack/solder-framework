@@ -26,7 +26,7 @@ class VersionTest extends TestCase
         Storage::fake(config('solder.disk.files'));
         $file = \Illuminate\Http\UploadedFile::fake()->image('example_package-1.0.0.zip');
         $version = factory(Version::class)->create([
-            'package'      => $file->store('files', ['disk' => config('solder.disk.files')]),
+            'package_path' => $file->store('files', ['disk' => config('solder.disk.files')]),
             'package_size' => 0,
             'package_hash' => 'some-old-or-invalid-hash',
         ]);

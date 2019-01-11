@@ -33,7 +33,6 @@ class ShowVersionTest extends TestCase
         $response->assertExactJson([
             'id'           => $version->id,
             'tag'          => '1.0.0',
-            'package'      => null,
             'package_url'  => null,
             'package_name' => null,
             'package_size' => null,

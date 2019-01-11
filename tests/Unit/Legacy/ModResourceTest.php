@@ -32,7 +32,7 @@ class ModResourceTest extends TestCase
         ]);
         $version = factory(Version::class)->create([
             'tag'          => '1.0.0',
-            'package'      => 'example-package.zip',
+            'package_path' => 'example-package.zip',
             'package_hash' => 'example-hash',
             'mod_id'       => $mod->id,
         ]);
