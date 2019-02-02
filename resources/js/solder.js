@@ -36,6 +36,7 @@ export default class Solder {
     static configureIntegrations() {
         _vue.use(Router);
         Model.$http = window.axios;
+        window.$http = window.axios;
     }
 
     /**

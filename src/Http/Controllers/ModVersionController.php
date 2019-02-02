@@ -72,10 +72,12 @@ class ModVersionController extends BaseController
         $unique = Rule::unique('versions')->where('mod_id', $mod->id);
 
         $attributes = $request->validate([
-            'tag' => ['required', $unique],
+            'tag'     => ['required', $unique],
+            'package' => ['required', 'mimes:zip'],
         ]);
 
         $version = $mod->versions()->create($attributes);
+        $version->setPackage($request->file('package'));
 
         return response()->json($version, 201);
     }

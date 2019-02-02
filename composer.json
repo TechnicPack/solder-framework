@@ -6,7 +6,9 @@
     "license": "MIT",
     "require": {
         "php": "^7.1",
+        "ext-zip": "*",
         "emgag/flysystem-hash": "^1.0",
+        "league/flysystem-ziparchive": "^1.0",
         "spatie/laravel-query-builder": "^1.11",
         "znck/belongs-to-through": "^2.3"
     },

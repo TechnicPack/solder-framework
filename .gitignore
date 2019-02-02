@@ -5,4 +5,5 @@ vendor
 coverage
 .idea
 .php_cs.cache
+.DS_Store
 /node_modules/

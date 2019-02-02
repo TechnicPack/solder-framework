@@ -11,11 +11,13 @@
 
 namespace TechnicPack\SolderFramework;
 
+use League\Flysystem\Filesystem;
 use Emgag\Flysystem\Hash\HashPlugin;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
 /**
+ * @property FileSystem package
  * @property string package_path
  * @property string package_name
  * @property int package_size
@@ -61,6 +63,18 @@ class Version extends Model
         'mod_id',
         'package_path',
     ];
+
+    /**
+     * The local copy of the package.
+     *
+     * @var Filesystem
+     */
+    private $packageFilesystem;
+
+    /**
+     * @var string
+     */
+    private $tempPackagePath;
 
     /**
      * The "booting" method of the model.
@@ -132,14 +146,14 @@ class Version extends Model
      */
     public function setPackage($package)
     {
-        if (null === $package) {
-            return $this->unsetPackage();
-        }
+        $this->unsetPackage();
 
-        $this->package_path = $this->storage()->putFile('files', $package);
-        $this->package_name = $package->getClientOriginalName();
-        $this->package_size = $package->getSize();
-        $this->package_hash = $package->getHash();
+        if (null !== $package) {
+            $this->package_path = $this->storage()->putFile('files', $package);
+            $this->package_name = $package->getClientOriginalName();
+            $this->package_size = $package->getSize();
+            $this->package_hash = $package->getHash();
+        }
 
         return $this->save();
     }

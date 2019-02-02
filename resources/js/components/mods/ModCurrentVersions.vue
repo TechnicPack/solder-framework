@@ -16,6 +16,9 @@
             <table class="table table-valign-middle mb-0">
                 <thead>
                 <th>Tag</th>
+                <th>Name</th>
+                <th>Hash</th>
+                <th>Size</th>
                 <th>&nbsp;</th>
                 </thead>
 
@@ -28,6 +31,12 @@
                             {{ version.tag }}
                         </router-link>
                     </td>
+
+                    <td>{{ version.package_name }}</td>
+
+                    <td>{{ version.package_hash }}</td>
+
+                    <td>{{ version.package_size }}</td>
 
                     <!-- Edit Button -->
                     <td class="td-fit">
