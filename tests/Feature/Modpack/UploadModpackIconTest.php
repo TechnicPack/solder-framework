@@ -25,7 +25,7 @@ class UploadModpackIconTest extends TestCase
     private $storage;
     private $icon;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

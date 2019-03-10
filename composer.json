@@ -10,7 +10,7 @@
         "emgag/flysystem-hash": "^1.0",
         "league/flysystem-ziparchive": "^1.0",
         "spatie/laravel-query-builder": "^1.11",
-        "znck/belongs-to-through": "^2.3"
+        "staudenmeir/belongs-to-through": "^2.4"
     },
     "require-dev": {
         "larapack/dd": "^1.0",

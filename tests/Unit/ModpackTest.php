@@ -22,7 +22,7 @@ class ModpackTest extends TestCase
 
     private $filesystem;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
