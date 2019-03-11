@@ -1,6 +1,11 @@
-import { Model } from 'vue-api-query';
+import App from "./App";
 import Router from 'vue-router';
 import SolderRouter from './router';
+import Keys from "./components/Keys";
+import { Model } from 'vue-api-query';
+import Clients from "./components/Clients";
+import NavMods from "./components/nav/NavMods";
+import NavModpacks from "./components/nav/NavModpacks";
 
 /**
  * Application Variables
@@ -43,10 +48,10 @@ export default class Solder {
      * Register Global Components.
      */
     static registerGlobalComponents() {
-        _vue.component('solder-app', require('./App'));
-        _vue.component('solder-nav-modpacks', require('./components/nav/NavModpacks'));
-        _vue.component('solder-nav-mods', require('./components/nav/NavMods'));
-        _vue.component('solder-keys', require('./components/Keys'));
-        _vue.component('solder-clients', require('./components/Clients'));
+        _vue.component('solder-app', App);
+        _vue.component('solder-nav-modpacks', NavModpacks);
+        _vue.component('solder-nav-mods', NavMods);
+        _vue.component('solder-keys', Keys);
+        _vue.component('solder-clients', Clients);
     }
 }
