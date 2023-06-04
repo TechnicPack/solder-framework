@@ -1,5 +1,8 @@
 # TechnicPack Solder
 
+> **Warning**
+> This project is abandoned and has been archived. For the current version of Solder, please see https://github.com/TechnicPack/TechnicSolder instead.
+
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/technicpack/solder-framework.svg?style=flat-square)](https://packagist.org/packages/technicpack/solder-framework)
 [![Build Status](https://img.shields.io/travis/technicpack/solder-framework/master.svg?style=flat-square)](https://travis-ci.org/technicpack/solder-framework)
 [![Quality Score](https://img.shields.io/scrutinizer/g/technicpack/solder-framework.svg?style=flat-square)](https://scrutinizer-ci.com/g/technicpack/solder-framework)
